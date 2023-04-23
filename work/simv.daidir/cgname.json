@@ -1,0 +1,248 @@
+{
+    "mux_onehot_0000": [
+        "mux_onehot_0000",
+        "LLkkA",
+        "module",
+        6
+    ],
+    "onehot_enc_0001": [
+        "onehot_enc_0001",
+        "pq6he",
+        "module",
+        10
+    ],
+    "onehot_enc": [
+        "onehot_enc",
+        "TCRLw",
+        "module",
+        8
+    ],
+    "vcs_paramclassrepository": [
+        "vcs_paramclassrepository",
+        "hEeZs",
+        "module",
+        1
+    ],
+    "rs1_0000": [
+        "rs1_0000",
+        "ME8qt",
+        "module",
+        11
+    ],
+    "rs_bank_0001": [
+        "rs_bank_0001",
+        "Wtk2L",
+        "module",
+        15
+    ],
+    "_vcs_unit__2042874088": [
+        "_vcs_unit__2042874088",
+        "HGr1G",
+        "module",
+        44
+    ],
+    "std": [
+        "std",
+        "reYIK",
+        "module",
+        3
+    ],
+    "alu": [
+        "alu",
+        "C26kq",
+        "module",
+        24
+    ],
+    "mux_onehot_0001": [
+        "mux_onehot_0001",
+        "ERSM4",
+        "module",
+        7
+    ],
+    "prf_0000": [
+        "prf_0000",
+        "RT7EF",
+        "module",
+        22
+    ],
+    "rs_array_0000": [
+        "rs_array_0000",
+        "B1b98",
+        "module",
+        12
+    ],
+    "wand_sel_0001": [
+        "wand_sel_0001",
+        "ci1CE",
+        "module",
+        17
+    ],
+    "dcache_if": [
+        "dcache_if",
+        "gnCEm",
+        "module",
+        45
+    ],
+    "uvm_pkg": [
+        "uvm_pkg",
+        "zr7M1",
+        "module",
+        4
+    ],
+    "mux_onehot": [
+        "mux_onehot",
+        "EzLx2",
+        "module",
+        5
+    ],
+    "top_tb": [
+        "top_tb",
+        "W0eJz",
+        "module",
+        37
+    ],
+    "onehot_enc_0000": [
+        "onehot_enc_0000",
+        "GafBz",
+        "module",
+        9
+    ],
+    "rs_array_0001": [
+        "rs_array_0001",
+        "RSRQ7",
+        "module",
+        13
+    ],
+    "rs_bank_0000": [
+        "rs_bank_0000",
+        "L7V57",
+        "module",
+        14
+    ],
+    "mult": [
+        "mult",
+        "SRUFi",
+        "module",
+        25
+    ],
+    "front_end_if": [
+        "front_end_if",
+        "jiKFf",
+        "module",
+        49
+    ],
+    "wand_sel_0000": [
+        "wand_sel_0000",
+        "hckDL",
+        "module",
+        16
+    ],
+    "wand_sel_0002": [
+        "wand_sel_0002",
+        "bG1sh",
+        "module",
+        18
+    ],
+    "busy_table_0000": [
+        "busy_table_0000",
+        "LLkfr",
+        "module",
+        31
+    ],
+    "psel_gen_0001": [
+        "psel_gen_0001",
+        "hid7S",
+        "module",
+        19
+    ],
+    "sort_0000": [
+        "sort_0000",
+        "q808k",
+        "module",
+        20
+    ],
+    "sort_0001": [
+        "sort_0001",
+        "jCeKe",
+        "module",
+        21
+    ],
+    "backend_0000": [
+        "backend_0000",
+        "itHa9",
+        "module",
+        23
+    ],
+    "fu_top_0000": [
+        "fu_top_0000",
+        "DsWmY",
+        "module",
+        26
+    ],
+    "decoder": [
+        "decoder",
+        "zf0bY",
+        "module",
+        29
+    ],
+    "decode_rename_0000": [
+        "decode_rename_0000",
+        "S2I8y",
+        "module",
+        27
+    ],
+    "decoder_top_0000": [
+        "decoder_top_0000",
+        "C5S8p",
+        "module",
+        28
+    ],
+    "rat_0000": [
+        "rat_0000",
+        "DxFvz",
+        "module",
+        30
+    ],
+    "rob_0000": [
+        "rob_0000",
+        "qbhND",
+        "module",
+        32
+    ],
+    "ptab_0000": [
+        "ptab_0000",
+        "qAjtH",
+        "module",
+        33
+    ],
+    "stq_0000": [
+        "stq_0000",
+        "WUUSr",
+        "module",
+        34
+    ],
+    "ldq_0000": [
+        "ldq_0000",
+        "RAGym",
+        "module",
+        35
+    ],
+    "lsq_0000": [
+        "lsq_0000",
+        "WEvGT",
+        "module",
+        36
+    ],
+    "dump_log": [
+        "dump_log",
+        "xGi2B",
+        "module",
+        47
+    ],
+    "...MASTER...": [
+        "SIM",
+        "amcQw",
+        "module",
+        38
+    ]
+}

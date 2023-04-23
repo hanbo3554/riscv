@@ -1,0 +1,90 @@
+version: (200506)
+
+available memory: 64M bytes
+used memory: 245760 bytes [need 240K bytes if disable swap]
+
+used block: 16 [memory(16) file(0)]
+                 [ 8K(14) 64K(2) { total 240K bytes } ]
+overhead: (9540) bytes for (16) blocks [Average: (596) bytes/block]
+
+write  => 0(times) 0K(bytes) [0K bytes to file]
+read   => 2(times) 87K(bytes) [11K bytes compressed data from file]
+access => 3320441(times) 25959M(bytes)
+          [hit ratio: 99.9999%]
+
+time: write(0) read(0)  unit: second
+
+swap file directory: (/home/ICer/Desktop/DV/cpu/work/verdiLog)
+used swap file number: (4)
+
+
+
+swap file manager:
+arrSize: (256)
+idxCnt: (5)
+closeHead: (1)
+closeTail: (4)
+openCnt: (1)
+fid(4): fd(0) fileName(NULL)
+	mode(rb)	hot(3) cool(0) pos(0)
+fid(3): fd(0) fileName(NULL)
+	mode(rb)	hot(1) cool(4) pos(0)
+fid(2): fd(29) fileName(/home/ICer/Desktop/DV/cpu/work/verdiLog/_swap_0001#8323328#65283)
+	size(0) lastModTime(0) curModTime(1682121260)
+	mode(w+b)	hot(4) cool(1) pos(0)
+fid(1): fd(0) fileName(NULL)
+	mode(rb)	hot(2) cool(3) pos(0)
+fid(0): fd(0) fileName(NULL)
+	mode(NULL)	hot(0) cool(0) pos(0)
+Swap system is reset at (Fri Apr 21 17:17:48 2023
+)
+version: (200506)
+
+available memory: 64M bytes
+used memory: 344064 bytes [need 240K bytes if disable swap]
+
+used block: 21 [memory(21) file(0)]
+                 [ 8K(18) 64K(3) { total 336K bytes } ]
+overhead: (9540) bytes for (21) blocks [Average: (454) bytes/block]
+
+write  => 0(times) 0K(bytes) [0K bytes to file]
+read   => 3(times) 111K(bytes) [16K bytes compressed data from file]
+access => 3421357(times) 26753M(bytes)
+          [hit ratio: 99.9999%]
+
+time: write(0) read(0)  unit: second
+
+swap file directory: (/home/ICer/Desktop/DV/cpu/work/verdiLog)
+used swap file number: (5)
+
+
+
+swap file manager:
+arrSize: (256)
+idxCnt: (8)
+closeHead: (5)
+closeTail: (6)
+openCnt: (2)
+fid(7): fd(0) fileName(/home/ICer/Desktop/DV/cpu/work/simv.daidir/kdb.elab++/work.lib++/uvm_seed.vh#inc___vcs_unit__1__14#.tdc)
+	size(1133) lastModTime(1682122645) curModTime(1682122645)
+	mode(rb)	hot(0) cool(0) pos(0)
+fid(6): fd(31) fileName(/home/ICer/Desktop/DV/cpu/work/verdiLog/_swap_0001#8323328#65283)
+	size(0) lastModTime(0) curModTime(1682122668)
+	mode(w+b)	hot(0) cool(5) pos(0)
+fid(5): fd(1073741824) fileName(/home/ICer/Desktop/DV/cpu/work/simv.daidir/kdb.elab++/work.lib++/test_backend.sv.tdc)
+	size(6702) lastModTime(1682122646) curModTime(1682122646)
+	mode(rb)	hot(6) cool(0) pos(0)
+fid(4): fd(0) fileName(NULL)
+	mode(NULL)	hot(0) cool(0) pos(0)
+fid(3): fd(0) fileName(NULL)
+	mode(NULL)	hot(0) cool(0) pos(0)
+fid(2): fd(0) fileName(NULL)
+	mode(NULL)	hot(0) cool(0) pos(0)
+fid(1): fd(0) fileName(NULL)
+	mode(NULL)	hot(0) cool(0) pos(0)
+fid(0): fd(0) fileName(NULL)
+	mode(NULL)	hot(0) cool(0) pos(0)
+==================================================
+mySelf(1389be30) pre(15b39390) next(0)
+version(200506)
+date(Sep 28 2018 10:00:16)

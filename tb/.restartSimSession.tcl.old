@@ -1,0 +1,288 @@
+# Begin_DVE_Session_Save_Info
+# DVE restart session
+# Saved on Tue Aug 16 00:43:18 2022
+# Designs open: 1
+#   Sim: /afs/umich.edu/user/h/a/hanbo/Desktop/eecs627/UVM/cpu/test_backend/dve
+# Toplevel windows open: 2
+# 	TopLevel.1
+# 	TopLevel.2
+#   Source.1: testbench.u_backend.u_lsq.u_ldq
+#   Wave.1: 290 signals
+#   Group count = 6
+#   Group Group1 signal count = 72
+#   Group Group3 signal count = 72
+#   Group Group4 signal count = 97
+#   Group Group2 signal count = 14
+#   Group Drivers: Sim:testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[9]@7650 signal count = 9
+#   Group Group5 signal count = 26
+# End_DVE_Session_Save_Info
+
+# DVE version: R-2020.12-SP2-1_Full64
+# DVE build date: Jul 18 2021 21:21:42
+
+
+#<Session mode="Restart" path=".restartSimSession.tcl" type="Debug">
+
+gui_set_loading_session_type Restart
+gui_continuetime_set
+gui_clear_window -type Wave
+gui_clear_window -type List
+
+# Application preferences
+gui_set_pref_value -key app_default_font -value {Helvetica,10,-1,5,50,0,0,0,0,0}
+gui_src_preferences -tabstop 8 -maxbits 24 -windownumber 1
+#<WindowLayout>
+
+# DVE top-level session
+
+
+# Create and position top-level window: TopLevel.1
+
+set TopLevel.1 TopLevel.1
+
+# Docked window settings
+set HSPane.1 HSPane.1
+set Hier.1 Hier.1
+set Stack.1 Stack.1
+set Class.1 Class.1
+set Object.1 Object.1
+set DLPane.1 DLPane.1
+set Data.1 Data.1
+set Local.1 Local.1
+set Member.1 Member.1
+set Console.1 Console.1
+set DriverLoad.1 DriverLoad.1
+gui_sync_global -id ${TopLevel.1} -option true
+
+# MDI window settings
+set Source.1 Source.1
+gui_update_layout -id ${Source.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false}}
+
+# End MDI window settings
+
+
+# Create and position top-level window: TopLevel.2
+
+set TopLevel.2 TopLevel.2
+
+# Docked window settings
+gui_sync_global -id ${TopLevel.2} -option true
+
+# MDI window settings
+set Wave.1 Wave.1
+gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 594} {child_wave_right 1448} {child_wave_colname 295} {child_wave_colvalue 295} {child_wave_col1 0} {child_wave_col2 1}}
+
+# End MDI window settings
+
+
+#</WindowLayout>
+
+#<Database>
+
+gui_set_precision 100ps
+gui_set_time_units 1ns
+#</Database>
+
+# DVE Global setting session: 
+
+
+# Global: Breakpoints
+
+# Global: Bus
+
+# Global: Expressions
+
+# Global: Signal Time Shift
+
+# Global: Signal Compare
+
+# Global: Signal Groups
+gui_load_child_values {testbench.u_backend.u_lsq.u_stq}
+gui_load_child_values {testbench.load_mem}
+
+
+set _session_group_1 Group1
+gui_sg_create "$_session_group_1"
+set Group1 "$_session_group_1"
+
+gui_sg_addsignal -group "$_session_group_1" { testbench.u_backend.u_lsq.u_ldq.clk testbench.u_backend.u_lsq.u_ldq.dcache_data testbench.u_backend.u_lsq.u_ldq.dcache_ldq_tag testbench.u_backend.u_lsq.u_ldq.dcache_ready testbench.u_backend.u_lsq.u_ldq.dcache_valid testbench.u_backend.u_lsq.u_ldq.dispatch_cnt testbench.u_backend.u_lsq.u_ldq.dispatch_ready testbench.u_backend.u_lsq.u_ldq.dispatch_resp testbench.u_backend.u_lsq.u_ldq.dispatch_st_mask testbench.u_backend.u_lsq.u_ldq.dispatch_st_youngest testbench.u_backend.u_lsq.u_ldq.dispatch_valid testbench.u_backend.u_lsq.u_ldq.execute_ld_addr testbench.u_backend.u_lsq.u_ldq.execute_ld_data_size testbench.u_backend.u_lsq.u_ldq.execute_ld_ldq_tag testbench.u_backend.u_lsq.u_ldq.execute_ld_pc testbench.u_backend.u_lsq.u_ldq.execute_ld_prn testbench.u_backend.u_lsq.u_ldq.execute_ld_rob_tag testbench.u_backend.u_lsq.u_ldq.execute_ld_valid testbench.u_backend.u_lsq.u_ldq.execute_st_addr testbench.u_backend.u_lsq.u_ldq.execute_st_addr_stq_tag testbench.u_backend.u_lsq.u_ldq.execute_st_addr_valid testbench.u_backend.u_lsq.u_ldq.fire_ld_accept testbench.u_backend.u_lsq.u_ldq.fire_ld_addr testbench.u_backend.u_lsq.u_ldq.fire_ld_data_size testbench.u_backend.u_lsq.u_ldq.fire_ld_kill testbench.u_backend.u_lsq.u_ldq.fire_ld_ldq_tag testbench.u_backend.u_lsq.u_ldq.fire_ld_ready testbench.u_backend.u_lsq.u_ldq.fire_ld_st_mask testbench.u_backend.u_lsq.u_ldq.fire_ld_st_youngest testbench.u_backend.u_lsq.u_ldq.fire_ld_valid testbench.u_backend.u_lsq.u_ldq.fire_ldq_idx testbench.u_backend.u_lsq.u_ldq.fire_st_ready testbench.u_backend.u_lsq.u_ldq.fire_st_stq_tag testbench.u_backend.u_lsq.u_ldq.fire_st_valid testbench.u_backend.u_lsq.u_ldq.fwd_data testbench.u_backend.u_lsq.u_ldq.fwd_ldq_tag testbench.u_backend.u_lsq.u_ldq.fwd_sleep testbench.u_backend.u_lsq.u_ldq.fwd_stq_tag testbench.u_backend.u_lsq.u_ldq.fwd_valid testbench.u_backend.u_lsq.u_ldq.head_pos_bit testbench.u_backend.u_lsq.u_ldq.head_ptr testbench.u_backend.u_lsq.u_ldq.head_ptr_overflow testbench.u_backend.u_lsq.u_ldq.head_ptr_plus1 testbench.u_backend.u_lsq.u_ldq.head_ptr_plus2 testbench.u_backend.u_lsq.u_ldq.head_ptr_plus3 testbench.u_backend.u_lsq.u_ldq.ld_wakeup_N testbench.u_backend.u_lsq.u_ldq.ld_writeback_N testbench.u_backend.u_lsq.u_ldq.ldq_entry testbench.u_backend.u_lsq.u_ldq.next_head_pos_bit testbench.u_backend.u_lsq.u_ldq.next_head_ptr testbench.u_backend.u_lsq.u_ldq.next_tail_pos_bit testbench.u_backend.u_lsq.u_ldq.next_tail_ptr testbench.u_backend.u_lsq.u_ldq.pipe_flush testbench.u_backend.u_lsq.u_ldq.retire_cnt testbench.u_backend.u_lsq.u_ldq.retire_pkt testbench.u_backend.u_lsq.u_ldq.rst_n testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N testbench.u_backend.u_lsq.u_ldq.stq_addr_valid testbench.u_backend.u_lsq.u_ldq.stq_entry testbench.u_backend.u_lsq.u_ldq.tail_pos_bit testbench.u_backend.u_lsq.u_ldq.tail_ptr testbench.u_backend.u_lsq.u_ldq.tail_ptr_overflow testbench.u_backend.u_lsq.u_ldq.tail_ptr_plus1 testbench.u_backend.u_lsq.u_ldq.tail_ptr_plus2 testbench.u_backend.u_lsq.u_ldq.tail_ptr_plus3 testbench.u_backend.u_lsq.u_ldq.writeback_data testbench.u_backend.u_lsq.u_ldq.writeback_dest_prn testbench.u_backend.u_lsq.u_ldq.writeback_ldq_idx testbench.u_backend.u_lsq.u_ldq.writeback_pc testbench.u_backend.u_lsq.u_ldq.writeback_ready testbench.u_backend.u_lsq.u_ldq.writeback_rob_tag testbench.u_backend.u_lsq.u_ldq.writeback_valid }
+gui_set_radix -radix {decimal} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.dcache_ldq_tag}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.dcache_ldq_tag}
+gui_set_radix -radix {binary} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.fire_ld_kill}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.fire_ld_kill}
+gui_set_radix -radix {decimal} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.fire_ld_ldq_tag}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.fire_ld_ldq_tag}
+gui_set_radix -radix {binary} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.ld_wakeup_N}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.ld_wakeup_N}
+gui_set_radix -radix {binary} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N}
+gui_set_radix -radix {decimal} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.tail_ptr}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.tail_ptr}
+
+set _session_group_2 Group3
+gui_sg_create "$_session_group_2"
+set Group3 "$_session_group_2"
+
+gui_sg_addsignal -group "$_session_group_2" { testbench.u_backend.u_lsq.u_stq.addr_conflict testbench.u_backend.u_lsq.u_stq.age_mask testbench.u_backend.u_lsq.u_stq.clk testbench.u_backend.u_lsq.u_stq.dispatch_cnt testbench.u_backend.u_lsq.u_stq.dispatch_ready testbench.u_backend.u_lsq.u_stq.dispatch_resp testbench.u_backend.u_lsq.u_stq.dispatch_st_mask testbench.u_backend.u_lsq.u_stq.dispatch_st_youngest testbench.u_backend.u_lsq.u_stq.dispatch_valid testbench.u_backend.u_lsq.u_stq.execute_st_addr testbench.u_backend.u_lsq.u_stq.execute_st_addr_stq_tag testbench.u_backend.u_lsq.u_stq.execute_st_addr_valid testbench.u_backend.u_lsq.u_stq.execute_st_data testbench.u_backend.u_lsq.u_stq.execute_st_data_size testbench.u_backend.u_lsq.u_stq.execute_st_data_stq_tag testbench.u_backend.u_lsq.u_stq.execute_st_data_valid testbench.u_backend.u_lsq.u_stq.fire_ld_addr testbench.u_backend.u_lsq.u_stq.fire_ld_data_size testbench.u_backend.u_lsq.u_stq.fire_ld_ldq_tag testbench.u_backend.u_lsq.u_stq.fire_ld_st_mask testbench.u_backend.u_lsq.u_stq.fire_ld_st_youngest testbench.u_backend.u_lsq.u_stq.fire_ld_valid testbench.u_backend.u_lsq.u_stq.fire_st_accept testbench.u_backend.u_lsq.u_stq.fire_st_addr testbench.u_backend.u_lsq.u_stq.fire_st_data testbench.u_backend.u_lsq.u_stq.fire_st_data_size testbench.u_backend.u_lsq.u_stq.fire_st_ready testbench.u_backend.u_lsq.u_stq.fire_st_stq_tag testbench.u_backend.u_lsq.u_stq.fire_st_valid testbench.u_backend.u_lsq.u_stq.found_match testbench.u_backend.u_lsq.u_stq.fwd_4B_aligned testbench.u_backend.u_lsq.u_stq.fwd_byte testbench.u_backend.u_lsq.u_stq.fwd_data testbench.u_backend.u_lsq.u_stq.fwd_half testbench.u_backend.u_lsq.u_stq.fwd_ldq_tag testbench.u_backend.u_lsq.u_stq.fwd_sleep testbench.u_backend.u_lsq.u_stq.fwd_stq_idx testbench.u_backend.u_lsq.u_stq.fwd_stq_idx_double testbench.u_backend.u_lsq.u_stq.fwd_stq_tag testbench.u_backend.u_lsq.u_stq.fwd_valid testbench.u_backend.u_lsq.u_stq.fwd_word testbench.u_backend.u_lsq.u_stq.head_pos_bit testbench.u_backend.u_lsq.u_stq.head_ptr testbench.u_backend.u_lsq.u_stq.head_ptr_overflow testbench.u_backend.u_lsq.u_stq.ld_offset_end testbench.u_backend.u_lsq.u_stq.ld_offset_start testbench.u_backend.u_lsq.u_stq.match testbench.u_backend.u_lsq.u_stq.match_double testbench.u_backend.u_lsq.u_stq.next_head_pos_bit testbench.u_backend.u_lsq.u_stq.next_head_ptr testbench.u_backend.u_lsq.u_stq.next_retired_pos_bit testbench.u_backend.u_lsq.u_stq.next_retired_ptr testbench.u_backend.u_lsq.u_stq.next_tail_pos_bit testbench.u_backend.u_lsq.u_stq.next_tail_ptr testbench.u_backend.u_lsq.u_stq.pipe_flush testbench.u_backend.u_lsq.u_stq.retire_cnt testbench.u_backend.u_lsq.u_stq.retire_pkt testbench.u_backend.u_lsq.u_stq.retired_pos_bit testbench.u_backend.u_lsq.u_stq.retired_ptr testbench.u_backend.u_lsq.u_stq.retired_ptr_overflow testbench.u_backend.u_lsq.u_stq.rst_n testbench.u_backend.u_lsq.u_stq.st_offset_end testbench.u_backend.u_lsq.u_stq.st_offset_start testbench.u_backend.u_lsq.u_stq.st_wakeup_N testbench.u_backend.u_lsq.u_stq.stq_entry testbench.u_backend.u_lsq.u_stq.tail_pos_bit testbench.u_backend.u_lsq.u_stq.tail_ptr testbench.u_backend.u_lsq.u_stq.tail_ptr_overflow testbench.u_backend.u_lsq.u_stq.tail_ptr_plus1 testbench.u_backend.u_lsq.u_stq.tail_ptr_plus2 testbench.u_backend.u_lsq.u_stq.tail_ptr_plus3 testbench.u_backend.u_lsq.u_stq.update_retire_N }
+gui_set_radix -radix {binary} -signals {Sim:testbench.u_backend.u_lsq.u_stq.fire_ld_st_mask}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_stq.fire_ld_st_mask}
+gui_set_radix -radix {decimal} -signals {Sim:testbench.u_backend.u_lsq.u_stq.fwd_stq_tag}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_stq.fwd_stq_tag}
+
+set _session_group_3 Group4
+gui_sg_create "$_session_group_3"
+set Group4 "$_session_group_3"
+
+gui_sg_addsignal -group "$_session_group_3" { testbench.u_backend.arch_rat_out testbench.u_backend.bru_branch_dir testbench.u_backend.bru_branch_misp testbench.u_backend.bru_next_pc testbench.u_backend.bru_ptab_tag testbench.u_backend.bru_target_pc testbench.u_backend.bru_valid testbench.u_backend.cdb_branch_misp testbench.u_backend.cdb_pc testbench.u_backend.cdb_prn testbench.u_backend.cdb_redirect_pc testbench.u_backend.cdb_result testbench.u_backend.cdb_rob testbench.u_backend.cdb_valid testbench.u_backend.clk testbench.u_backend.dcache_data testbench.u_backend.dcache_ldq_tag testbench.u_backend.dcache_ready testbench.u_backend.dcache_valid testbench.u_backend.decode_rename_fetch_pkt testbench.u_backend.decode_rename_ready testbench.u_backend.dispatch_ldq_resp testbench.u_backend.dispatch_lsq_pkt testbench.u_backend.dispatch_lsq_pkt_ready testbench.u_backend.dispatch_rob_pkt testbench.u_backend.dispatch_rob_pkt_ready testbench.u_backend.dispatch_rob_pkt_resp testbench.u_backend.dispatch_rs_pkt testbench.u_backend.dispatch_stq_resp testbench.u_backend.execute_pkt testbench.u_backend.execute_prn testbench.u_backend.execute_valid testbench.u_backend.fetch_br_misp testbench.u_backend.fetch_pkt testbench.u_backend.fetch_pkt_ready testbench.u_backend.fetch_redirect_pc testbench.u_backend.fire_ld_addr testbench.u_backend.fire_ld_data_size testbench.u_backend.fire_ld_kill testbench.u_backend.fire_ld_ldq_tag testbench.u_backend.fire_ld_ready testbench.u_backend.fire_ld_valid testbench.u_backend.fire_st_addr testbench.u_backend.fire_st_data testbench.u_backend.fire_st_data_size testbench.u_backend.fire_st_ready testbench.u_backend.fire_st_stq_tag testbench.u_backend.fire_st_valid testbench.u_backend.int_dispatch_pkt testbench.u_backend.int_dispatch_pkt_ready testbench.u_backend.int_issue_pkt testbench.u_backend.issue_pkt testbench.u_backend.mem_dispatch_pkt testbench.u_backend.mem_dispatch_pkt_ready testbench.u_backend.mem_issue_pkt testbench.u_backend.pipe_bru_branch_misp testbench.u_backend.pipe_bru_redirect_pc testbench.u_backend.pipe_execute_pkt testbench.u_backend.pipe_flush testbench.u_backend.pipe_issue_pkt testbench.u_backend.pipe_ptab_tag testbench.u_backend.pipe_reg_read_pkt testbench.u_backend.pipe_rename_pkt testbench.u_backend.pipe_retire_pkt testbench.u_backend.ptab_fetch_pkt testbench.u_backend.ptab_ready testbench.u_backend.ptab_tag testbench.u_backend.rda_addr testbench.u_backend.rda_out testbench.u_backend.rdb_addr testbench.u_backend.rdb_out testbench.u_backend.recov_arch_st testbench.u_backend.reg_read_pkt testbench.u_backend.rename_pkt testbench.u_backend.rename_pkt_ready testbench.u_backend.retire_br_misp testbench.u_backend.retire_dest_arn testbench.u_backend.retire_dest_prn testbench.u_backend.retire_dest_prn_prev testbench.u_backend.retire_dest_prn_prev_ready testbench.u_backend.retire_dest_prn_prev_valid testbench.u_backend.retire_exception testbench.u_backend.retire_pkt testbench.u_backend.retire_redirect_pc testbench.u_backend.retire_valid testbench.u_backend.rob_tag testbench.u_backend.rst_n testbench.u_backend.sys_exception testbench.u_backend.wr_addr testbench.u_backend.wr_data testbench.u_backend.wr_en testbench.u_backend.writeback_lsq_data testbench.u_backend.writeback_lsq_dest_prn testbench.u_backend.writeback_lsq_pc testbench.u_backend.writeback_lsq_ready testbench.u_backend.writeback_lsq_rob_tag testbench.u_backend.writeback_lsq_valid }
+
+set _session_group_4 Group2
+gui_sg_create "$_session_group_4"
+set Group2 "$_session_group_4"
+
+gui_sg_addsignal -group "$_session_group_4" { testbench.load_mem.addr_conflict testbench.load_mem.byte_level testbench.load_mem.curr_ld_addr testbench.load_mem.curr_ld_ldq_tag testbench.load_mem.curr_ld_size testbench.load_mem.cyc_untill_next testbench.load_mem.half_level testbench.load_mem.hit_rate testbench.load_mem.kill_curr_req testbench.load_mem.ld_offset_end testbench.load_mem.ld_offset_start testbench.load_mem.st_offset_end testbench.load_mem.st_offset_start testbench.load_mem.word_level }
+gui_set_radix -radix {decimal} -signals {Sim:testbench.load_mem.curr_ld_ldq_tag}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.load_mem.curr_ld_ldq_tag}
+gui_set_radix -radix {decimal} -signals {Sim:testbench.load_mem.cyc_untill_next}
+gui_set_radix -radix {twosComplement} -signals {Sim:testbench.load_mem.cyc_untill_next}
+gui_set_radix -radix {decimal} -signals {Sim:testbench.load_mem.hit_rate}
+gui_set_radix -radix {twosComplement} -signals {Sim:testbench.load_mem.hit_rate}
+
+set _session_group_5 {Drivers: Sim:testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[9]@7650}
+gui_sg_create "$_session_group_5"
+set {Drivers: Sim:testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[9]@7650} "$_session_group_5"
+
+gui_sg_addsignal -group "$_session_group_5" { {testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[9]} {testbench.u_backend.u_lsq.u_ldq.execute_st_addr[31:2]} {testbench.u_backend.u_lsq.u_ldq.ldq_entry[9].addr[31:2]} testbench.u_backend.u_lsq.u_ldq.execute_st_addr_valid {testbench.u_backend.u_lsq.u_ldq.ldq_entry[9].fired} testbench.u_backend.u_lsq.u_ldq.fire_ld_accept testbench.u_backend.u_lsq.u_ldq.fire_ld_ldq_tag {testbench.u_backend.u_lsq.u_ldq.ldq_entry[9].addr_valid} {testbench.u_backend.u_lsq.u_ldq.ldq_entry[9].st_mask[0]} }
+gui_set_radix -radix {decimal} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.fire_ld_ldq_tag}
+gui_set_radix -radix {unsigned} -signals {Sim:testbench.u_backend.u_lsq.u_ldq.fire_ld_ldq_tag}
+
+set _session_group_6 Group5
+gui_sg_create "$_session_group_6"
+set Group5 "$_session_group_6"
+
+gui_sg_addsignal -group "$_session_group_6" { testbench.u_backend.u_rs_bank_mem.clk testbench.u_backend.u_rs_bank_mem.rst_n testbench.u_backend.u_rs_bank_mem.pipe_flush testbench.u_backend.u_rs_bank_mem.dispatch_pkt testbench.u_backend.u_rs_bank_mem.cdb_valid testbench.u_backend.u_rs_bank_mem.cdb_prn testbench.u_backend.u_rs_bank_mem.issue_pkt testbench.u_backend.u_rs_bank_mem.dispatch_pkt_ready testbench.u_backend.u_rs_bank_mem.rs_avail_cnt testbench.u_backend.u_rs_bank_mem.rs_full testbench.u_backend.u_rs_bank_mem.rs_age_pos testbench.u_backend.u_rs_bank_mem.alloc_gnt_bus testbench.u_backend.u_rs_bank_mem.alloc_index_valid testbench.u_backend.u_rs_bank_mem.rs_age testbench.u_backend.u_rs_bank_mem.rs_age_tag testbench.u_backend.u_rs_bank_mem.rs_wake_up testbench.u_backend.u_rs_bank_mem.rs_issue_req testbench.u_backend.u_rs_bank_mem.rs_issue_req_N testbench.u_backend.u_rs_bank_mem.alloc_index testbench.u_backend.u_rs_bank_mem.issue_sel testbench.u_backend.u_rs_bank_mem.issue_en_N testbench.u_backend.u_rs_bank_mem.rs_avail testbench.u_backend.u_rs_bank_mem.rs_issued testbench.u_backend.u_rs_bank_mem.valid_inst_cnt testbench.u_backend.u_rs_bank_mem.issue_en testbench.u_backend.u_rs_bank_mem.alloc_sel }
+
+# Global: Highlighting
+gui_highlight_signals -color #00ff00 {{testbench.u_backend.u_lsq.u_ldq.execute_st_addr[31:0]} testbench.u_backend.u_lsq.u_ldq.execute_st_addr_valid testbench.u_backend.u_lsq.u_ldq.fire_ld_accept {testbench.u_backend.u_lsq.u_ldq.fire_ld_ldq_tag[3:0]} testbench.u_backend.u_lsq.u_ldq.fire_st_ready testbench.u_backend.u_lsq.u_ldq.fire_st_valid {testbench.u_backend.u_lsq.u_ldq.fwd_ldq_tag[3:0]} testbench.u_backend.u_lsq.u_ldq.fwd_valid {testbench.u_backend.u_lsq.u_ldq.ldq_entry[0:15]} {testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[15:0]} {testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[15]} {testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[5]} {testbench.u_backend.u_lsq.u_ldq.execute_st_addr[31:2]} {testbench.u_backend.u_lsq.u_ldq.ldq_entry[4]} {testbench.u_backend.u_lsq.u_ldq.ldq_entry[9]} {testbench.u_backend.u_lsq.u_ldq.ldq_entry[4].fired} {testbench.u_backend.u_lsq.u_ldq.ldq_entry[9].fired}}
+
+# Global: Stack
+gui_change_stack_mode -mode list
+
+# Post database loading setting...
+
+# Save global setting...
+
+# Wave/List view global setting
+gui_cov_show_value -switch false
+
+# Close all empty TopLevel windows
+foreach __top [gui_ekki_get_window_ids -type TopLevel] {
+    if { [llength [gui_ekki_get_window_ids -parent $__top]] == 0} {
+        gui_close_window -window $__top
+    }
+}
+gui_set_loading_session_type noSession
+# DVE View/pane content session: 
+
+
+# Hier 'Hier.1'
+gui_show_window -window ${Hier.1}
+gui_list_set_filter -id ${Hier.1} -list { {Package 1} {All 0} {Process 1} {VirtPowSwitch 0} {UnnamedProcess 1} {UDP 0} {Function 1} {Block 1} {SrsnAndSpaCell 0} {OVA Unit 1} {LeafScCell 1} {LeafVlgCell 1} {Interface 1} {LeafVhdCell 1} {$unit 1} {NamedBlock 1} {Task 1} {VlgPackage 1} {ClassDef 1} {VirtIsoCell 0} }
+gui_list_set_filter -id ${Hier.1} -text {*}
+gui_change_design -id ${Hier.1} -design Sim
+catch {gui_list_expand -id ${Hier.1} testbench}
+catch {gui_list_expand -id ${Hier.1} testbench.u_backend}
+catch {gui_list_select -id ${Hier.1} {testbench.u_backend.u_rs_bank_mem}}
+gui_view_scroll -id ${Hier.1} -vertical -set 123
+gui_view_scroll -id ${Hier.1} -horizontal -set 2
+
+# Class 'Class.1'
+gui_list_set_filter -id ${Class.1} -list { {OVM 1} {VMM 1} {All 1} {Object 1} {UVM 1} {RVM 1} }
+gui_list_set_filter -id ${Class.1} -text {*}
+gui_change_design -id ${Class.1} -design Sim
+# Warning: Class view not found.
+
+# Member 'Member.1'
+gui_list_set_filter -id ${Member.1} -list { {InternalMember 0} {RandMember 1} {All 0} {BaseMember 0} {PrivateMember 1} {LibBaseMember 0} {AutomaticMember 1} {VirtualMember 1} {PublicMember 1} {ProtectedMember 1} {OverRiddenMember 0} {InterfaceClassMember 1} {StaticMember 1} }
+gui_list_set_filter -id ${Member.1} -text {*}
+
+# Data 'Data.1'
+gui_list_set_filter -id ${Data.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {LowPower 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
+gui_list_set_filter -id ${Data.1} -text {*}
+gui_list_show_data -id ${Data.1} {testbench.u_backend.u_rs_bank_mem}
+gui_show_window -window ${Data.1}
+catch { gui_list_select -id ${Data.1} {testbench.u_backend.u_rs_bank_mem.clk testbench.u_backend.u_rs_bank_mem.rst_n testbench.u_backend.u_rs_bank_mem.pipe_flush testbench.u_backend.u_rs_bank_mem.dispatch_pkt testbench.u_backend.u_rs_bank_mem.cdb_valid testbench.u_backend.u_rs_bank_mem.cdb_prn testbench.u_backend.u_rs_bank_mem.issue_pkt testbench.u_backend.u_rs_bank_mem.dispatch_pkt_ready testbench.u_backend.u_rs_bank_mem.rs_avail_cnt testbench.u_backend.u_rs_bank_mem.rs_full testbench.u_backend.u_rs_bank_mem.rs_age_pos testbench.u_backend.u_rs_bank_mem.alloc_gnt_bus testbench.u_backend.u_rs_bank_mem.alloc_index_valid testbench.u_backend.u_rs_bank_mem.rs_age testbench.u_backend.u_rs_bank_mem.rs_age_tag testbench.u_backend.u_rs_bank_mem.rs_wake_up testbench.u_backend.u_rs_bank_mem.rs_issue_req testbench.u_backend.u_rs_bank_mem.rs_issue_req_N testbench.u_backend.u_rs_bank_mem.alloc_index testbench.u_backend.u_rs_bank_mem.issue_sel testbench.u_backend.u_rs_bank_mem.issue_en_N testbench.u_backend.u_rs_bank_mem.rs_avail testbench.u_backend.u_rs_bank_mem.rs_issued testbench.u_backend.u_rs_bank_mem.valid_inst_cnt testbench.u_backend.u_rs_bank_mem.issue_en testbench.u_backend.u_rs_bank_mem.alloc_sel }}
+gui_view_scroll -id ${Data.1} -vertical -set 4
+gui_view_scroll -id ${Data.1} -horizontal -set 0
+gui_view_scroll -id ${Hier.1} -vertical -set 123
+gui_view_scroll -id ${Hier.1} -horizontal -set 2
+
+# DriverLoad 'DriverLoad.1'
+gui_get_drivers -session -id ${DriverLoad.1} -signal {testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[15:0]} -time 735 -starttime 829.6
+gui_get_drivers -session -id ${DriverLoad.1} -signal {testbench.u_backend.u_lsq.u_ldq.ldq_entry[15].data_valid} -time 6155 -starttime 6155
+gui_get_drivers -session -id ${DriverLoad.1} -signal {testbench.u_backend.u_lsq.u_ldq.fire_ld_kill[15:0]} -time 745 -starttime 749.9
+gui_get_drivers -session -id ${DriverLoad.1} -signal {testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[9]} -time 765 -starttime 791
+
+# Source 'Source.1'
+gui_src_value_annotate -id ${Source.1} -switch false
+gui_set_env TOGGLE::VALUEANNOTATE 0
+gui_open_source -id ${Source.1}  -replace -active testbench.u_backend.u_lsq.u_ldq /afs/umich.edu/user/h/a/hanbo/Desktop/eecs627/UVM/cpu/test_backend/../verilog/ldq.sv
+gui_view_scroll -id ${Source.1} -vertical -set 2160
+gui_src_set_reusable -id ${Source.1}
+
+# View 'Wave.1'
+gui_wv_sync -id ${Wave.1} -switch false
+set groupExD [gui_get_pref_value -category Wave -key exclusiveSG]
+gui_set_pref_value -category Wave -key exclusiveSG -value {false}
+set origWaveHeight [gui_get_pref_value -category Wave -key waveRowHeight]
+gui_list_set_height -id Wave -height 25
+set origGroupCreationState [gui_list_create_group_when_add -wave]
+gui_list_create_group_when_add -wave -disable
+gui_wv_zoom_timerange -id ${Wave.1} 193.6 761.2
+gui_list_add_group -id ${Wave.1} -after {New Group} {Group1}
+gui_list_add_group -id ${Wave.1} -after {New Group} {{Drivers: Sim:testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[9]@7650}}
+gui_list_add_group -id ${Wave.1} -after {New Group} {Group3}
+gui_list_add_group -id ${Wave.1} -after {New Group} {Group4}
+gui_list_add_group -id ${Wave.1} -after {New Group} {Group2}
+gui_list_add_group -id ${Wave.1} -after {New Group} {Group5}
+gui_list_collapse -id ${Wave.1} {Drivers: Sim:testbench.u_backend.u_lsq.u_ldq.st_ld_violation_N[9]@7650}
+gui_list_collapse -id ${Wave.1} Group3
+gui_list_collapse -id ${Wave.1} Group2
+gui_list_expand -id ${Wave.1} testbench.u_backend.u_lsq.u_ldq.ldq_entry
+gui_list_expand -id ${Wave.1} {testbench.u_backend.u_lsq.u_ldq.ldq_entry[0]}
+gui_list_expand -id ${Wave.1} testbench.u_backend.pipe_issue_pkt
+gui_list_expand -id ${Wave.1} {testbench.u_backend.pipe_issue_pkt[6]}
+gui_list_select -id ${Wave.1} {testbench.u_backend.u_rs_bank_mem.rs_age_pos }
+gui_set_radix -radix unsigned -signal {{testbench.u_backend.pipe_issue_pkt[6].rob_entry}}
+gui_set_radix -radix decimal -signal {{testbench.u_backend.pipe_issue_pkt[6].rob_entry}}
+gui_seek_criteria -id ${Wave.1} {Any Edge}
+
+
+
+gui_set_env TOGGLE::DEFAULT_WAVE_WINDOW ${Wave.1}
+gui_set_pref_value -category Wave -key exclusiveSG -value $groupExD
+gui_list_set_height -id Wave -height $origWaveHeight
+if {$origGroupCreationState} {
+	gui_list_create_group_when_add -wave -enable
+}
+if { $groupExD } {
+ gui_msg_report -code DVWW028
+}
+gui_list_set_filter -id ${Wave.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
+gui_list_set_filter -id ${Wave.1} -text {*}
+gui_list_set_insertion_bar  -id ${Wave.1} -group Group5  -item {testbench.u_backend.u_rs_bank_mem.alloc_sel[0:7][3:0]} -position below
+
+gui_view_scroll -id ${Wave.1} -vertical -set 5359
+gui_show_grid -id ${Wave.1} -enable false
+# Restore toplevel window zorder
+# The toplevel window could be closed if it has no view/pane
+if {[gui_exist_window -window ${TopLevel.1}]} {
+	gui_set_active_window -window ${TopLevel.1}
+	gui_set_active_window -window ${Source.1}
+	gui_set_active_window -window ${DLPane.1}
+}
+if {[gui_exist_window -window ${TopLevel.2}]} {
+	gui_set_active_window -window ${TopLevel.2}
+	gui_set_active_window -window ${Wave.1}
+}
+#</Session>
+

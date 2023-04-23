@@ -1,0 +1,23 @@
+Command: vcs -full64 -lca -sverilog -l compile.log -timescale=1ns/1ps -ntb_opts uvm-1.1 \
++define+UVM_NO_DEPRECATED+UVM_OBJECT_MUST_HAVE_CONSTRUCTO +plusarg_save -top top_tb \
++ntb_random_seed=244609849 -cm line+cond+fsm+tgl+branch -f /home/ICer/Desktop/DV/cpu/verilog/filelist.f \
+
+                         Chronologic VCS (TM)
+        Version O-2018.09-1_Full64 -- Fri Apr 21 20:01:12 2023
+               Copyright (c) 1991-2018 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+
+Warning-[LCA_FEATURES_ENABLED] Usage warning
+  LCA features enabled by '-lca' argument on the command line.  For more 
+  information regarding list of LCA features please refer to Chapter "LCA 
+  features" in the VCS/VCS-MX Release Notes
+
+The design hasn't changed and need not be recompiled. 
+If you really want to, delete file simv.daidir/.vcs.timestamp and
+run VCS again.
+

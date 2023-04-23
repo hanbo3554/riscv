@@ -1,0 +1,833 @@
+addi 	x0,		x0,		747
+addi 	x1,		x0,		717
+addi 	x2,		x0,		-110
+addi 	x3,		x0,		1520
+addi 	x4,		x0,		1947
+addi 	x5,		x0,		-1500
+addi 	x6,		x0,		328
+addi 	x7,		x0,		-1410
+addi 	x8,		x0,		-259
+addi 	x9,		x0,		-829
+addi 	x10,	x0,		135
+addi 	x11,	x0,		915
+addi 	x12,	x0,		1847
+addi 	x13,	x0,		-1117
+addi 	x14,	x0,		-1463
+addi 	x15,	x0,		1666
+addi 	x16,	x0,		-1224
+addi 	x17,	x0,		985
+addi 	x18,	x0,		-712
+addi 	x19,	x0,		-1084
+addi 	x20,	x0,		509
+addi 	x21,	x0,		342
+addi 	x22,	x0,		-876
+addi 	x23,	x0,		-1176
+addi 	x24,	x0,		784
+addi 	x25,	x0,		951
+addi 	x26,	x0,		-606
+addi 	x27,	x0,		1349
+addi 	x28,	x0,		-752
+addi 	x29,	x0,		1434
+addi 	x30,	x0,		140
+addi 	x31,	x0,		-855
+PC0x80:	sub  	x30,	x23,	x25
+PC0x84:	bge  	x13,	x11,	PC0x2cc
+PC0x88:	addi 	x16,	x10,	-1022
+PC0x8c:	slli 	x9,		x26,	9
+PC0x90:	jal  	x3,				PC0x394
+PC0x94:	bge  	x15,	x26,	PC0x938
+PC0x98:	mul  	x28,	x18,	x20
+PC0x9c:	add  	x18,	x28,	x18
+PC0xa0:	add  	x24,	x20,	x29
+PC0xa4:	mul  	x17,	x9,		x6
+PC0xa8:	addi 	x9,		x31,	-553
+PC0xac:	srai 	x14,	x29,	10
+PC0xb0:	bgeu 	x28,	x10,	PC0x9dc
+PC0xb4:	add  	x30,	x20,	x18
+PC0xb8:	beq  	x0,		x3,		PC0xacc
+PC0xbc:	bne  	x8,		x19,	PC0x3a4
+PC0xc0:	bgeu 	x11,	x14,	PC0x8a8
+PC0xc4:	bge  	x22,	x30,	PC0x688
+PC0xc8:	mul  	x6,		x28,	x5
+PC0xcc:	sub  	x6,		x27,	x19
+PC0xd0:	jal  	x18,			PC0x5ac
+PC0xd4:	mul  	x17,	x29,	x21
+PC0xd8:	jal  	x2,				PC0x2ec
+PC0xdc:	bge  	x19,	x17,	PC0xe0
+PC0xe0:	blt  	x2,		x17,	PC0xb78
+PC0xe4:	sub  	x11,	x24,	x30
+PC0xe8:	beq  	x18,	x4,		PC0xb48
+PC0xec:	jal  	x8,				PC0x464
+PC0xf0:	bne  	x3,		x3,		PC0x56c
+PC0xf4:	add  	x4,		x30,	x2
+PC0xf8:	sub  	x18,	x30,	x31
+PC0xfc:	bne  	x8,		x26,	PC0x954
+PC0x100:	sltiu	x9,		x14,	1816
+PC0x104:	xor  	x6,		x27,	x24
+PC0x108:	bgeu 	x17,	x31,	PC0x2a0
+PC0x10c:	beq  	x3,		x28,	PC0x534
+PC0x110:	sub  	x27,	x14,	x19
+PC0x114:	and  	x25,	x5,		x7
+PC0x118:	xor  	x14,	x27,	x2
+PC0x11c:	bltu 	x18,	x5,		PC0x284
+PC0x120:	bne  	x9,		x6,		PC0x778
+PC0x124:	nop  
+PC0x128:	srli 	x21,	x12,	25
+PC0x12c:	slt  	x16,	x3,		x11
+PC0x130:	blt  	x2,		x12,	PC0x6e4
+PC0x134:	jal  	x31,			PC0x2a4
+PC0x138:	nop  
+PC0x13c:	mul  	x4,		x18,	x13
+PC0x140:	add  	x30,	x28,	x29
+PC0x144:	beq  	x30,	x26,	PC0x340
+PC0x148:	ori  	x4,		x31,	1832
+PC0x14c:	sub  	x23,	x4,		x2
+PC0x150:	beq  	x8,		x18,	PC0x33c
+PC0x154:	sub  	x3,		x15,	x13
+PC0x158:	ori  	x4,		x31,	-1483
+PC0x15c:	add  	x12,	x23,	x30
+PC0x160:	xori 	x7,		x2,		540
+PC0x164:	mulhu	x15,	x11,	x11
+PC0x168:	sra  	x10,	x21,	x11
+PC0x16c:	add  	x28,	x27,	x31
+PC0x170:	bge  	x16,	x24,	PC0x18c
+PC0x174:	bltu 	x31,	x12,	PC0xc78
+PC0x178:	sub  	x29,	x27,	x4
+PC0x17c:	add  	x20,	x7,		x6
+PC0x180:	blt  	x25,	x22,	PC0x408
+PC0x184:	bne  	x4,		x4,		PC0x89c
+PC0x188:	blt  	x4,		x30,	PC0x71c
+PC0x18c:	bge  	x1,		x13,	PC0x1e4
+PC0x190:	sub  	x15,	x25,	x1
+PC0x194:	bltu 	x4,		x26,	PC0xc70
+PC0x198:	jal  	x24,			PC0x2c4
+PC0x19c:	bltu 	x22,	x2,		PC0xc78
+PC0x1a0:	mul  	x27,	x14,	x18
+PC0x1a4:	bgeu 	x10,	x14,	PC0xad4
+PC0x1a8:	mul  	x20,	x8,		x5
+PC0x1ac:	mulhu	x31,	x13,	x21
+PC0x1b0:	bne  	x4,		x21,	PC0x2fc
+PC0x1b4:	xori 	x20,	x6,		920
+PC0x1b8:	bgeu 	x15,	x15,	PC0x70c
+PC0x1bc:	sub  	x8,		x31,	x24
+PC0x1c0:	bgeu 	x12,	x25,	PC0xe0
+PC0x1c4:	add  	x25,	x8,		x6
+PC0x1c8:	bge  	x2,		x22,	PC0x6f0
+PC0x1cc:	or   	x21,	x6,		x13
+PC0x1d0:	bltu 	x18,	x15,	PC0x354
+PC0x1d4:	sub  	x19,	x28,	x25
+PC0x1d8:	srai 	x6,		x17,	3
+PC0x1dc:	beq  	x21,	x24,	PC0xacc
+PC0x1e0:	beq  	x15,	x2,		PC0x40c
+PC0x1e4:	jal  	x7,				PC0x5b8
+PC0x1e8:	sll  	x29,	x17,	x25
+PC0x1ec:	mulhsu	x9,		x16,	x18
+PC0x1f0:	bgeu 	x13,	x15,	PC0x4b4
+PC0x1f4:	srl  	x11,	x6,		x27
+PC0x1f8:	jal  	x24,			PC0x994
+PC0x1fc:	bge  	x7,		x0,		PC0x690
+PC0x200:	bgeu 	x5,		x8,		PC0x7f4
+PC0x204:	mulhu	x22,	x14,	x11
+PC0x208:	mul  	x26,	x20,	x8
+PC0x20c:	xor  	x22,	x29,	x20
+PC0x210:	nop  
+PC0x214:	blt  	x20,	x8,		PC0x494
+PC0x218:	sub  	x10,	x4,		x16
+PC0x21c:	bltu 	x27,	x18,	PC0xcc4
+PC0x220:	bge  	x18,	x14,	PC0x80
+PC0x224:	bge  	x26,	x10,	PC0xb60
+PC0x228:	add  	x21,	x31,	x8
+PC0x22c:	bltu 	x22,	x6,		PC0x784
+PC0x230:	srai 	x8,		x19,	20
+PC0x234:	slli 	x25,	x22,	4
+PC0x238:	jal  	x29,			PC0x880
+PC0x23c:	slti 	x19,	x12,	1500
+PC0x240:	bge  	x27,	x11,	PC0xd4
+PC0x244:	sub  	x8,		x13,	x28
+PC0x248:	bltu 	x20,	x0,		PC0x51c
+PC0x24c:	bne  	x13,	x12,	PC0x330
+PC0x250:	bne  	x26,	x9,		PC0x380
+PC0x254:	bne  	x24,	x22,	PC0xc74
+PC0x258:	ori  	x20,	x28,	-753
+PC0x25c:	addi 	x30,	x4,		-1049
+PC0x260:	bne  	x22,	x23,	PC0x6b8
+PC0x264:	add  	x27,	x24,	x30
+PC0x268:	bne  	x14,	x23,	PC0x5a0
+PC0x26c:	add  	x20,	x9,		x7
+PC0x270:	bge  	x6,		x29,	PC0x1d4
+PC0x274:	sub  	x4,		x4,		x12
+PC0x278:	blt  	x7,		x20,	PC0x3b0
+PC0x27c:	jal  	x13,			PC0xc20
+PC0x280:	bge  	x20,	x3,		PC0x198
+PC0x284:	sltiu	x2,		x9,		-1740
+PC0x288:	jal  	x15,			PC0x460
+PC0x28c:	beq  	x21,	x21,	PC0x7a8
+PC0x290:	blt  	x3,		x10,	PC0xbc0
+PC0x294:	slt  	x24,	x22,	x28
+PC0x298:	bge  	x29,	x22,	PC0x5c4
+PC0x29c:	bgeu 	x6,		x16,	PC0x44c
+PC0x2a0:	or   	x23,	x20,	x2
+PC0x2a4:	bltu 	x13,	x15,	PC0x438
+PC0x2a8:	bne  	x20,	x1,		PC0x144
+PC0x2ac:	add  	x25,	x13,	x22
+PC0x2b0:	mul  	x16,	x6,		x0
+PC0x2b4:	beq  	x13,	x19,	PC0xa94
+PC0x2b8:	beq  	x27,	x21,	PC0x648
+PC0x2bc:	add  	x2,		x24,	x5
+PC0x2c0:	bne  	x8,		x6,		PC0x35c
+PC0x2c4:	srai 	x11,	x4,		19
+PC0x2c8:	add  	x10,	x4,		x24
+PC0x2cc:	bltu 	x9,		x10,	PC0x484
+PC0x2d0:	mul  	x14,	x23,	x20
+PC0x2d4:	blt  	x4,		x22,	PC0x4c0
+PC0x2d8:	srai 	x19,	x14,	30
+PC0x2dc:	bgeu 	x6,		x24,	PC0x41c
+PC0x2e0:	bltu 	x23,	x19,	PC0xccc
+PC0x2e4:	mulh 	x27,	x5,		x18
+PC0x2e8:	bge  	x5,		x9,		PC0xc34
+PC0x2ec:	sub  	x12,	x27,	x11
+PC0x2f0:	beq  	x21,	x26,	PC0x6f4
+PC0x2f4:	add  	x7,		x6,		x15
+PC0x2f8:	srai 	x22,	x13,	7
+PC0x2fc:	srai 	x11,	x17,	27
+PC0x300:	slt  	x26,	x14,	x12
+PC0x304:	slt  	x1,		x9,		x6
+PC0x308:	bge  	x23,	x13,	PC0x5e0
+PC0x30c:	bne  	x3,		x1,		PC0xb64
+PC0x310:	bgeu 	x10,	x7,		PC0xa6c
+PC0x314:	bgeu 	x8,		x28,	PC0x710
+PC0x318:	bge  	x22,	x18,	PC0xce4
+PC0x31c:	bgeu 	x4,		x13,	PC0x710
+PC0x320:	add  	x5,		x28,	x3
+PC0x324:	mul  	x16,	x6,		x7
+PC0x328:	mul  	x21,	x30,	x12
+PC0x32c:	blt  	x8,		x21,	PC0x7a0
+PC0x330:	xor  	x8,		x10,	x20
+PC0x334:	add  	x25,	x13,	x7
+PC0x338:	slti 	x15,	x11,	-156
+PC0x33c:	bne  	x2,		x19,	PC0x7f0
+PC0x340:	xori 	x18,	x14,	2000
+PC0x344:	bge  	x19,	x12,	PC0x464
+PC0x348:	sll  	x5,		x19,	x31
+PC0x34c:	add  	x19,	x10,	x3
+PC0x350:	add  	x28,	x11,	x12
+PC0x354:	bne  	x26,	x10,	PC0xc00
+PC0x358:	bgeu 	x1,		x25,	PC0x6b4
+PC0x35c:	add  	x2,		x8,		x21
+PC0x360:	sub  	x17,	x17,	x29
+PC0x364:	sra  	x18,	x5,		x17
+PC0x368:	bne  	x0,		x0,		PC0x500
+PC0x36c:	bge  	x6,		x18,	PC0x18c
+PC0x370:	bltu 	x8,		x4,		PC0x944
+PC0x374:	jal  	x18,			PC0xfc
+PC0x378:	bge  	x24,	x11,	PC0xb64
+PC0x37c:	sub  	x6,		x11,	x27
+PC0x380:	add  	x20,	x12,	x20
+PC0x384:	jal  	x7,				PC0xce8
+PC0x388:	beq  	x12,	x9,		PC0xaf4
+PC0x38c:	mul  	x22,	x25,	x7
+PC0x390:	bltu 	x4,		x27,	PC0xbf4
+PC0x394:	mul  	x20,	x6,		x30
+PC0x398:	beq  	x13,	x26,	PC0xc94
+PC0x39c:	ori  	x12,	x0,		1516
+PC0x3a0:	blt  	x28,	x17,	PC0xa0
+PC0x3a4:	bne  	x9,		x0,		PC0xb84
+PC0x3a8:	bge  	x22,	x23,	PC0x36c
+PC0x3ac:	bgeu 	x17,	x26,	PC0x258
+PC0x3b0:	beq  	x5,		x11,	PC0x9b4
+PC0x3b4:	ori  	x9,		x18,	395
+PC0x3b8:	mul  	x20,	x0,		x19
+PC0x3bc:	bgeu 	x9,		x11,	PC0x520
+PC0x3c0:	add  	x9,		x28,	x27
+PC0x3c4:	bne  	x10,	x14,	PC0x544
+PC0x3c8:	blt  	x24,	x9,		PC0xa18
+PC0x3cc:	bne  	x12,	x28,	PC0xbf0
+PC0x3d0:	mul  	x30,	x3,		x5
+PC0x3d4:	sub  	x26,	x19,	x22
+PC0x3d8:	sub  	x19,	x11,	x24
+PC0x3dc:	blt  	x3,		x3,		PC0x8d0
+PC0x3e0:	bne  	x23,	x19,	PC0x464
+PC0x3e4:	bgeu 	x4,		x19,	PC0xa60
+PC0x3e8:	blt  	x25,	x30,	PC0x57c
+PC0x3ec:	bltu 	x22,	x25,	PC0x8d0
+PC0x3f0:	srai 	x12,	x12,	28
+PC0x3f4:	addi 	x7,		x3,		1462
+PC0x3f8:	bne  	x18,	x18,	PC0xc8
+PC0x3fc:	bge  	x2,		x29,	PC0x9d4
+PC0x400:	slt  	x6,		x26,	x16
+PC0x404:	bltu 	x17,	x5,		PC0xb1c
+PC0x408:	srli 	x26,	x1,		8
+PC0x40c:	mulhu	x26,	x13,	x18
+PC0x410:	and  	x23,	x13,	x16
+PC0x414:	blt  	x6,		x29,	PC0x964
+PC0x418:	blt  	x2,		x9,		PC0x6e8
+PC0x41c:	bgeu 	x27,	x7,		PC0x240
+PC0x420:	bltu 	x20,	x9,		PC0x654
+PC0x424:	mulhsu	x10,	x9,		x1
+PC0x428:	sub  	x4,		x25,	x21
+PC0x42c:	mul  	x16,	x5,		x1
+PC0x430:	jal  	x28,			PC0xb04
+PC0x434:	sub  	x22,	x18,	x24
+PC0x438:	bge  	x15,	x0,		PC0x494
+PC0x43c:	blt  	x29,	x17,	PC0x654
+PC0x440:	bltu 	x21,	x21,	PC0x900
+PC0x444:	mul  	x14,	x3,		x6
+PC0x448:	blt  	x9,		x27,	PC0xc38
+PC0x44c:	blt  	x31,	x31,	PC0x51c
+PC0x450:	sub  	x23,	x17,	x18
+PC0x454:	sub  	x16,	x29,	x1
+PC0x458:	bne  	x12,	x23,	PC0xaa8
+PC0x45c:	add  	x23,	x11,	x5
+PC0x460:	nop  
+PC0x464:	sub  	x15,	x24,	x4
+PC0x468:	bne  	x9,		x27,	PC0x780
+PC0x46c:	bltu 	x28,	x17,	PC0xba4
+PC0x470:	bne  	x0,		x20,	PC0x48c
+PC0x474:	mulhsu	x27,	x13,	x25
+PC0x478:	bne  	x19,	x7,		PC0x42c
+PC0x47c:	blt  	x19,	x14,	PC0x14c
+PC0x480:	bne  	x11,	x3,		PC0x648
+PC0x484:	bgeu 	x29,	x28,	PC0x83c
+PC0x488:	bge  	x1,		x7,		PC0x868
+PC0x48c:	bltu 	x8,		x21,	PC0x194
+PC0x490:	mul  	x7,		x0,		x15
+PC0x494:	sll  	x7,		x24,	x31
+PC0x498:	blt  	x5,		x22,	PC0x80
+PC0x49c:	sub  	x24,	x9,		x17
+PC0x4a0:	sltu 	x21,	x10,	x2
+PC0x4a4:	beq  	x6,		x21,	PC0xa80
+PC0x4a8:	sub  	x26,	x0,		x5
+PC0x4ac:	sll  	x19,	x9,		x11
+PC0x4b0:	bltu 	x20,	x25,	PC0x514
+PC0x4b4:	sub  	x22,	x28,	x5
+PC0x4b8:	bge  	x25,	x27,	PC0xcb4
+PC0x4bc:	or   	x16,	x28,	x18
+PC0x4c0:	mulhsu	x6,		x14,	x17
+PC0x4c4:	slti 	x17,	x31,	-1910
+PC0x4c8:	bltu 	x26,	x30,	PC0xd0
+PC0x4cc:	bne  	x25,	x4,		PC0x1ec
+PC0x4d0:	blt  	x6,		x26,	PC0xc28
+PC0x4d4:	mulhsu	x1,		x17,	x6
+PC0x4d8:	beq  	x14,	x26,	PC0x7d8
+PC0x4dc:	sub  	x22,	x28,	x21
+PC0x4e0:	blt  	x25,	x25,	PC0x5e4
+PC0x4e4:	bltu 	x17,	x21,	PC0x454
+PC0x4e8:	slli 	x29,	x18,	10
+PC0x4ec:	addi 	x2,		x18,	-164
+PC0x4f0:	beq  	x16,	x12,	PC0x568
+PC0x4f4:	beq  	x9,		x29,	PC0x194
+PC0x4f8:	sub  	x9,		x4,		x1
+PC0x4fc:	bltu 	x29,	x24,	PC0x7a8
+PC0x500:	blt  	x14,	x15,	PC0x870
+PC0x504:	sub  	x12,	x28,	x17
+PC0x508:	slti 	x15,	x9,		-1141
+PC0x50c:	beq  	x22,	x26,	PC0x308
+PC0x510:	mulhsu	x10,	x7,		x12
+PC0x514:	beq  	x31,	x1,		PC0x948
+PC0x518:	bne  	x23,	x7,		PC0x118
+PC0x51c:	add  	x23,	x9,		x5
+PC0x520:	blt  	x28,	x7,		PC0x5e0
+PC0x524:	beq  	x24,	x2,		PC0x974
+PC0x528:	mul  	x2,		x13,	x20
+PC0x52c:	bltu 	x2,		x27,	PC0x450
+PC0x530:	bne  	x4,		x30,	PC0x878
+PC0x534:	beq  	x24,	x30,	PC0x658
+PC0x538:	bgeu 	x27,	x21,	PC0x7b4
+PC0x53c:	and  	x8,		x13,	x17
+PC0x540:	beq  	x19,	x16,	PC0x35c
+PC0x544:	bne  	x18,	x21,	PC0x928
+PC0x548:	bge  	x31,	x26,	PC0x6b4
+PC0x54c:	bne  	x25,	x8,		PC0x8a4
+PC0x550:	sltiu	x16,	x2,		-1858
+PC0x554:	bne  	x1,		x2,		PC0x26c
+PC0x558:	mul  	x14,	x24,	x31
+PC0x55c:	mul  	x5,		x5,		x4
+PC0x560:	srli 	x28,	x7,		3
+PC0x564:	or   	x13,	x31,	x28
+PC0x568:	blt  	x17,	x28,	PC0xcc8
+PC0x56c:	sll  	x13,	x20,	x30
+PC0x570:	sub  	x29,	x29,	x20
+PC0x574:	sltu 	x2,		x0,		x4
+PC0x578:	bltu 	x17,	x5,		PC0xe0
+PC0x57c:	sub  	x24,	x22,	x31
+PC0x580:	bgeu 	x5,		x0,		PC0x604
+PC0x584:	beq  	x13,	x28,	PC0x3b8
+PC0x588:	jal  	x18,			PC0xfc
+PC0x58c:	bne  	x13,	x4,		PC0xb38
+PC0x590:	bgeu 	x24,	x11,	PC0xe0
+PC0x594:	bgeu 	x19,	x26,	PC0x5c8
+PC0x598:	mul  	x27,	x31,	x27
+PC0x59c:	mul  	x3,		x2,		x26
+PC0x5a0:	blt  	x22,	x17,	PC0xc20
+PC0x5a4:	beq  	x23,	x17,	PC0x31c
+PC0x5a8:	bltu 	x24,	x14,	PC0x9b4
+PC0x5ac:	beq  	x2,		x14,	PC0x570
+PC0x5b0:	blt  	x5,		x9,		PC0x278
+PC0x5b4:	add  	x2,		x3,		x28
+PC0x5b8:	sub  	x8,		x5,		x18
+PC0x5bc:	beq  	x27,	x29,	PC0xb8
+PC0x5c0:	blt  	x1,		x13,	PC0x218
+PC0x5c4:	jal  	x3,				PC0xe4
+PC0x5c8:	beq  	x17,	x18,	PC0x8cc
+PC0x5cc:	jal  	x24,			PC0x650
+PC0x5d0:	bge  	x2,		x24,	PC0x764
+PC0x5d4:	blt  	x29,	x29,	PC0x3bc
+PC0x5d8:	beq  	x22,	x28,	PC0x374
+PC0x5dc:	ori  	x11,	x7,		84
+PC0x5e0:	blt  	x26,	x13,	PC0x11c
+PC0x5e4:	blt  	x22,	x10,	PC0x6c4
+PC0x5e8:	blt  	x2,		x23,	PC0x764
+PC0x5ec:	bne  	x23,	x30,	PC0x24c
+PC0x5f0:	jal  	x4,				PC0xec
+PC0x5f4:	bltu 	x19,	x25,	PC0x534
+PC0x5f8:	bge  	x0,		x28,	PC0xb28
+PC0x5fc:	slt  	x12,	x10,	x17
+PC0x600:	xor  	x8,		x7,		x15
+PC0x604:	bgeu 	x28,	x22,	PC0xbe0
+PC0x608:	sub  	x4,		x25,	x9
+PC0x60c:	bge  	x19,	x17,	PC0x360
+PC0x610:	blt  	x12,	x7,		PC0x8e8
+PC0x614:	bne  	x22,	x18,	PC0x900
+PC0x618:	bgeu 	x9,		x31,	PC0x3e8
+PC0x61c:	sub  	x20,	x25,	x8
+PC0x620:	nop  
+PC0x624:	mulhu	x25,	x15,	x19
+PC0x628:	mul  	x29,	x22,	x11
+PC0x62c:	xori 	x29,	x27,	-646
+PC0x630:	mul  	x25,	x26,	x7
+PC0x634:	sub  	x18,	x31,	x12
+PC0x638:	sub  	x4,		x20,	x6
+PC0x63c:	sub  	x19,	x6,		x29
+PC0x640:	bne  	x14,	x19,	PC0x484
+PC0x644:	bge  	x2,		x20,	PC0x354
+PC0x648:	mul  	x1,		x10,	x20
+PC0x64c:	beq  	x16,	x8,		PC0x408
+PC0x650:	addi 	x18,	x8,		902
+PC0x654:	add  	x5,		x16,	x6
+PC0x658:	bgeu 	x17,	x10,	PC0x348
+PC0x65c:	blt  	x17,	x8,		PC0xa78
+PC0x660:	slti 	x7,		x29,	-1521
+PC0x664:	add  	x31,	x14,	x19
+PC0x668:	bgeu 	x23,	x3,		PC0x3d8
+PC0x66c:	jal  	x27,			PC0xaac
+PC0x670:	mul  	x8,		x30,	x5
+PC0x674:	or   	x24,	x17,	x30
+PC0x678:	sub  	x22,	x30,	x6
+PC0x67c:	bne  	x0,		x15,	PC0xaac
+PC0x680:	srl  	x16,	x0,		x26
+PC0x684:	sub  	x23,	x20,	x26
+PC0x688:	blt  	x3,		x2,		PC0xc58
+PC0x68c:	bne  	x11,	x28,	PC0x990
+PC0x690:	jal  	x19,			PC0x6f4
+PC0x694:	bgeu 	x21,	x27,	PC0x8f0
+PC0x698:	sll  	x23,	x20,	x18
+PC0x69c:	beq  	x20,	x16,	PC0x590
+PC0x6a0:	jal  	x2,				PC0x4cc
+PC0x6a4:	bgeu 	x29,	x24,	PC0x758
+PC0x6a8:	bne  	x8,		x15,	PC0x648
+PC0x6ac:	bgeu 	x14,	x3,		PC0x450
+PC0x6b0:	andi 	x9,		x4,		376
+PC0x6b4:	mulhu	x8,		x22,	x18
+PC0x6b8:	bge  	x0,		x8,		PC0x6ec
+PC0x6bc:	mul  	x20,	x24,	x30
+PC0x6c0:	blt  	x29,	x5,		PC0x440
+PC0x6c4:	blt  	x14,	x14,	PC0x7a0
+PC0x6c8:	beq  	x3,		x9,		PC0xb94
+PC0x6cc:	add  	x23,	x22,	x4
+PC0x6d0:	srli 	x18,	x27,	29
+PC0x6d4:	bltu 	x5,		x2,		PC0x8b0
+PC0x6d8:	sub  	x12,	x14,	x9
+PC0x6dc:	mul  	x30,	x18,	x10
+PC0x6e0:	bltu 	x9,		x18,	PC0x62c
+PC0x6e4:	add  	x23,	x14,	x30
+PC0x6e8:	add  	x6,		x1,		x10
+PC0x6ec:	mul  	x7,		x13,	x15
+PC0x6f0:	xori 	x30,	x29,	1261
+PC0x6f4:	mulh 	x12,	x3,		x13
+PC0x6f8:	mul  	x24,	x20,	x19
+PC0x6fc:	sub  	x30,	x29,	x6
+PC0x700:	slt  	x26,	x12,	x18
+PC0x704:	bne  	x9,		x0,		PC0x2ac
+PC0x708:	sub  	x22,	x27,	x8
+PC0x70c:	add  	x31,	x20,	x6
+PC0x710:	bltu 	x14,	x0,		PC0x160
+PC0x714:	slli 	x2,		x15,	24
+PC0x718:	blt  	x15,	x2,		PC0x4c8
+PC0x71c:	bltu 	x25,	x16,	PC0x1b4
+PC0x720:	beq  	x16,	x15,	PC0x114
+PC0x724:	bltu 	x22,	x17,	PC0x950
+PC0x728:	srli 	x8,		x14,	28
+PC0x72c:	add  	x23,	x13,	x10
+PC0x730:	addi 	x4,		x29,	-1472
+PC0x734:	add  	x21,	x9,		x1
+PC0x738:	bgeu 	x23,	x23,	PC0x7f0
+PC0x73c:	add  	x6,		x16,	x8
+PC0x740:	blt  	x5,		x4,		PC0xc28
+PC0x744:	slt  	x10,	x18,	x5
+PC0x748:	mulhu	x8,		x12,	x27
+PC0x74c:	srai 	x12,	x9,		1
+PC0x750:	beq  	x3,		x27,	PC0x694
+PC0x754:	add  	x27,	x17,	x2
+PC0x758:	bgeu 	x18,	x26,	PC0x5f8
+PC0x75c:	bltu 	x7,		x21,	PC0xa20
+PC0x760:	sub  	x11,	x18,	x13
+PC0x764:	add  	x8,		x28,	x28
+PC0x768:	sub  	x21,	x26,	x19
+PC0x76c:	blt  	x26,	x10,	PC0x50c
+PC0x770:	bne  	x25,	x6,		PC0x758
+PC0x774:	nop  
+PC0x778:	addi 	x6,		x15,	-1578
+PC0x77c:	blt  	x25,	x14,	PC0x530
+PC0x780:	or   	x12,	x25,	x3
+PC0x784:	beq  	x14,	x4,		PC0xb14
+PC0x788:	nop  
+PC0x78c:	bne  	x18,	x6,		PC0x8f0
+PC0x790:	bltu 	x0,		x20,	PC0xa0
+PC0x794:	slti 	x15,	x4,		-1948
+PC0x798:	bne  	x10,	x18,	PC0xc0
+PC0x79c:	ori  	x11,	x18,	1893
+PC0x7a0:	bgeu 	x16,	x20,	PC0x8e8
+PC0x7a4:	bne  	x12,	x10,	PC0x6c8
+PC0x7a8:	bge  	x16,	x0,		PC0x284
+PC0x7ac:	bgeu 	x9,		x2,		PC0xa44
+PC0x7b0:	bge  	x12,	x2,		PC0x630
+PC0x7b4:	jal  	x20,			PC0xb98
+PC0x7b8:	bge  	x17,	x23,	PC0xb18
+PC0x7bc:	bne  	x28,	x13,	PC0x56c
+PC0x7c0:	mul  	x22,	x9,		x4
+PC0x7c4:	bne  	x0,		x6,		PC0x51c
+PC0x7c8:	mul  	x17,	x21,	x20
+PC0x7cc:	bge  	x29,	x7,		PC0xa60
+PC0x7d0:	beq  	x11,	x23,	PC0x82c
+PC0x7d4:	bltu 	x30,	x21,	PC0xc7c
+PC0x7d8:	mul  	x30,	x13,	x8
+PC0x7dc:	addi 	x9,		x24,	214
+PC0x7e0:	bltu 	x30,	x3,		PC0x974
+PC0x7e4:	sub  	x30,	x16,	x9
+PC0x7e8:	jal  	x25,			PC0x3e0
+PC0x7ec:	add  	x30,	x16,	x28
+PC0x7f0:	beq  	x29,	x12,	PC0x1ac
+PC0x7f4:	add  	x17,	x28,	x22
+PC0x7f8:	blt  	x17,	x4,		PC0xe8
+PC0x7fc:	bge  	x17,	x7,		PC0xa34
+PC0x800:	sub  	x15,	x11,	x27
+PC0x804:	bne  	x19,	x17,	PC0x6e0
+PC0x808:	bltu 	x27,	x7,		PC0xc9c
+PC0x80c:	srai 	x4,		x7,		29
+PC0x810:	add  	x2,		x20,	x16
+PC0x814:	and  	x17,	x26,	x30
+PC0x818:	beq  	x10,	x23,	PC0x474
+PC0x81c:	sltiu	x2,		x8,		-1429
+PC0x820:	addi 	x15,	x3,		-1887
+PC0x824:	beq  	x11,	x18,	PC0x134
+PC0x828:	add  	x21,	x23,	x14
+PC0x82c:	sub  	x13,	x9,		x16
+PC0x830:	sub  	x17,	x14,	x25
+PC0x834:	blt  	x24,	x24,	PC0x9f8
+PC0x838:	bge  	x10,	x3,		PC0x9f0
+PC0x83c:	srl  	x12,	x21,	x12
+PC0x840:	sltiu	x16,	x14,	1060
+PC0x844:	bltu 	x24,	x29,	PC0x640
+PC0x848:	bltu 	x31,	x7,		PC0x180
+PC0x84c:	bge  	x11,	x16,	PC0x808
+PC0x850:	bne  	x2,		x19,	PC0x464
+PC0x854:	sub  	x23,	x19,	x28
+PC0x858:	sra  	x1,		x27,	x4
+PC0x85c:	bge  	x4,		x17,	PC0x44c
+PC0x860:	bge  	x4,		x15,	PC0xa50
+PC0x864:	beq  	x20,	x22,	PC0xc94
+PC0x868:	or   	x14,	x22,	x10
+PC0x86c:	beq  	x29,	x28,	PC0x28c
+PC0x870:	beq  	x31,	x17,	PC0xa9c
+PC0x874:	bltu 	x3,		x3,		PC0xacc
+PC0x878:	sub  	x30,	x6,		x27
+PC0x87c:	add  	x17,	x17,	x28
+PC0x880:	beq  	x18,	x23,	PC0x194
+PC0x884:	sub  	x13,	x8,		x1
+PC0x888:	bltu 	x4,		x7,		PC0x7bc
+PC0x88c:	add  	x25,	x5,		x22
+PC0x890:	beq  	x22,	x18,	PC0xcbc
+PC0x894:	beq  	x15,	x23,	PC0x3f0
+PC0x898:	xori 	x15,	x22,	-1955
+PC0x89c:	bgeu 	x5,		x29,	PC0x3f4
+PC0x8a0:	mulh 	x6,		x26,	x16
+PC0x8a4:	sltiu	x18,	x11,	-1130
+PC0x8a8:	jal  	x25,			PC0x2dc
+PC0x8ac:	bgeu 	x12,	x10,	PC0xa6c
+PC0x8b0:	bge  	x27,	x29,	PC0xa14
+PC0x8b4:	beq  	x3,		x15,	PC0x234
+PC0x8b8:	add  	x7,		x9,		x6
+PC0x8bc:	bge  	x22,	x13,	PC0x980
+PC0x8c0:	add  	x15,	x25,	x7
+PC0x8c4:	sub  	x25,	x25,	x16
+PC0x8c8:	add  	x12,	x16,	x11
+PC0x8cc:	bltu 	x11,	x7,		PC0x794
+PC0x8d0:	mulhsu	x19,	x6,		x11
+PC0x8d4:	bltu 	x0,		x27,	PC0xa2c
+PC0x8d8:	add  	x2,		x21,	x13
+PC0x8dc:	sub  	x15,	x7,		x24
+PC0x8e0:	bltu 	x30,	x13,	PC0xb4c
+PC0x8e4:	bne  	x31,	x16,	PC0x34c
+PC0x8e8:	and  	x14,	x10,	x10
+PC0x8ec:	mul  	x27,	x25,	x15
+PC0x8f0:	bgeu 	x13,	x5,		PC0x764
+PC0x8f4:	sub  	x16,	x17,	x21
+PC0x8f8:	sub  	x7,		x3,		x16
+PC0x8fc:	bne  	x1,		x15,	PC0x5e4
+PC0x900:	mul  	x26,	x26,	x3
+PC0x904:	mulhsu	x4,		x8,		x19
+PC0x908:	srl  	x8,		x4,		x30
+PC0x90c:	beq  	x7,		x27,	PC0x2e4
+PC0x910:	bgeu 	x22,	x29,	PC0x854
+PC0x914:	bne  	x23,	x28,	PC0xa44
+PC0x918:	sub  	x26,	x17,	x24
+PC0x91c:	jal  	x14,			PC0x878
+PC0x920:	bne  	x24,	x27,	PC0x438
+PC0x924:	bgeu 	x19,	x16,	PC0x674
+PC0x928:	bgeu 	x10,	x19,	PC0xbb8
+PC0x92c:	bgeu 	x12,	x21,	PC0xa84
+PC0x930:	bgeu 	x27,	x22,	PC0x400
+PC0x934:	mul  	x29,	x31,	x10
+PC0x938:	bgeu 	x10,	x8,		PC0x13c
+PC0x93c:	srai 	x24,	x18,	15
+PC0x940:	bgeu 	x1,		x4,		PC0x44c
+PC0x944:	bgeu 	x4,		x11,	PC0xbb8
+PC0x948:	bltu 	x1,		x22,	PC0x578
+PC0x94c:	add  	x2,		x16,	x21
+PC0x950:	add  	x1,		x25,	x28
+PC0x954:	add  	x29,	x9,		x9
+PC0x958:	beq  	x15,	x3,		PC0x454
+PC0x95c:	bne  	x21,	x14,	PC0xa84
+PC0x960:	beq  	x10,	x28,	PC0x7f4
+PC0x964:	beq  	x24,	x10,	PC0x5bc
+PC0x968:	beq  	x0,		x17,	PC0xadc
+PC0x96c:	sltu 	x10,	x13,	x28
+PC0x970:	bge  	x17,	x2,		PC0x5c4
+PC0x974:	jal  	x10,			PC0xae4
+PC0x978:	sub  	x25,	x31,	x5
+PC0x97c:	add  	x17,	x1,		x26
+PC0x980:	bne  	x6,		x7,		PC0x1a0
+PC0x984:	mul  	x5,		x29,	x15
+PC0x988:	add  	x29,	x24,	x9
+PC0x98c:	bltu 	x11,	x8,		PC0x408
+PC0x990:	bgeu 	x17,	x11,	PC0x8a0
+PC0x994:	nop  
+PC0x998:	bgeu 	x13,	x15,	PC0x588
+PC0x99c:	jal  	x6,				PC0x3bc
+PC0x9a0:	mul  	x3,		x6,		x17
+PC0x9a4:	blt  	x31,	x22,	PC0x6dc
+PC0x9a8:	add  	x18,	x1,		x27
+PC0x9ac:	addi 	x24,	x8,		-131
+PC0x9b0:	bge  	x16,	x29,	PC0x51c
+PC0x9b4:	mulhu	x2,		x11,	x5
+PC0x9b8:	beq  	x11,	x13,	PC0x338
+PC0x9bc:	srli 	x13,	x4,		25
+PC0x9c0:	bgeu 	x16,	x25,	PC0x88c
+PC0x9c4:	addi 	x2,		x0,		-1234
+PC0x9c8:	ori  	x5,		x20,	-67
+PC0x9cc:	bge  	x22,	x30,	PC0x338
+PC0x9d0:	jal  	x2,				PC0x9b4
+PC0x9d4:	sub  	x3,		x12,	x25
+PC0x9d8:	sub  	x2,		x12,	x20
+PC0x9dc:	bgeu 	x1,		x24,	PC0x2ac
+PC0x9e0:	bge  	x19,	x12,	PC0x650
+PC0x9e4:	add  	x26,	x17,	x14
+PC0x9e8:	mul  	x31,	x22,	x11
+PC0x9ec:	or   	x12,	x24,	x27
+PC0x9f0:	bgeu 	x23,	x13,	PC0x8b0
+PC0x9f4:	add  	x28,	x13,	x25
+PC0x9f8:	sub  	x18,	x31,	x1
+PC0x9fc:	nop  
+PC0xa00:	xor  	x24,	x28,	x0
+PC0xa04:	srli 	x8,		x16,	27
+PC0xa08:	andi 	x29,	x16,	1711
+PC0xa0c:	sub  	x12,	x26,	x9
+PC0xa10:	srl  	x2,		x6,		x11
+PC0xa14:	sll  	x26,	x13,	x10
+PC0xa18:	bne  	x12,	x25,	PC0x364
+PC0xa1c:	mul  	x4,		x14,	x30
+PC0xa20:	xor  	x29,	x10,	x10
+PC0xa24:	beq  	x10,	x6,		PC0x994
+PC0xa28:	beq  	x28,	x24,	PC0x600
+PC0xa2c:	bgeu 	x9,		x27,	PC0x17c
+PC0xa30:	sub  	x14,	x7,		x9
+PC0xa34:	bgeu 	x4,		x28,	PC0x798
+PC0xa38:	sll  	x29,	x23,	x25
+PC0xa3c:	mul  	x4,		x13,	x11
+PC0xa40:	and  	x19,	x8,		x31
+PC0xa44:	bne  	x1,		x16,	PC0x468
+PC0xa48:	beq  	x22,	x29,	PC0xad4
+PC0xa4c:	bgeu 	x30,	x21,	PC0x14c
+PC0xa50:	mulhsu	x14,	x3,		x13
+PC0xa54:	bltu 	x19,	x10,	PC0x668
+PC0xa58:	mul  	x3,		x1,		x23
+PC0xa5c:	blt  	x9,		x22,	PC0x5e8
+PC0xa60:	sub  	x27,	x11,	x28
+PC0xa64:	bgeu 	x24,	x0,		PC0x5c8
+PC0xa68:	andi 	x3,		x23,	734
+PC0xa6c:	bltu 	x27,	x11,	PC0xbc8
+PC0xa70:	slli 	x18,	x26,	14
+PC0xa74:	jal  	x26,			PC0xc14
+PC0xa78:	srl  	x2,		x18,	x31
+PC0xa7c:	beq  	x1,		x21,	PC0x924
+PC0xa80:	mulh 	x23,	x6,		x8
+PC0xa84:	beq  	x16,	x28,	PC0xce4
+PC0xa88:	add  	x21,	x16,	x7
+PC0xa8c:	beq  	x9,		x27,	PC0xc30
+PC0xa90:	blt  	x4,		x16,	PC0xaa8
+PC0xa94:	bge  	x2,		x27,	PC0x4cc
+PC0xa98:	sub  	x21,	x29,	x24
+PC0xa9c:	jal  	x21,			PC0x224
+PC0xaa0:	beq  	x22,	x27,	PC0x6b0
+PC0xaa4:	sub  	x16,	x8,		x25
+PC0xaa8:	jal  	x31,			PC0x1d4
+PC0xaac:	slli 	x9,		x28,	3
+PC0xab0:	sub  	x18,	x10,	x27
+PC0xab4:	add  	x1,		x30,	x25
+PC0xab8:	add  	x18,	x8,		x20
+PC0xabc:	bltu 	x14,	x29,	PC0x27c
+PC0xac0:	bne  	x3,		x14,	PC0x570
+PC0xac4:	add  	x5,		x29,	x18
+PC0xac8:	mulh 	x10,	x1,		x8
+PC0xacc:	sub  	x12,	x21,	x13
+PC0xad0:	blt  	x30,	x13,	PC0x710
+PC0xad4:	add  	x5,		x5,		x30
+PC0xad8:	add  	x17,	x20,	x28
+PC0xadc:	nop  
+PC0xae0:	jal  	x14,			PC0x3ac
+PC0xae4:	mulhsu	x21,	x26,	x24
+PC0xae8:	mul  	x28,	x29,	x28
+PC0xaec:	mul  	x25,	x3,		x14
+PC0xaf0:	xori 	x27,	x2,		-526
+PC0xaf4:	bgeu 	x4,		x8,		PC0x8fc
+PC0xaf8:	mul  	x12,	x6,		x17
+PC0xafc:	bltu 	x9,		x7,		PC0x7e4
+PC0xb00:	bgeu 	x9,		x1,		PC0xdc
+PC0xb04:	sub  	x14,	x22,	x3
+PC0xb08:	add  	x13,	x7,		x15
+PC0xb0c:	srai 	x21,	x10,	25
+PC0xb10:	jal  	x5,				PC0x7a4
+PC0xb14:	bgeu 	x5,		x1,		PC0x1ac
+PC0xb18:	jal  	x11,			PC0x5f4
+PC0xb1c:	beq  	x12,	x27,	PC0x1a8
+PC0xb20:	add  	x25,	x28,	x11
+PC0xb24:	sub  	x23,	x6,		x14
+PC0xb28:	mul  	x23,	x25,	x3
+PC0xb2c:	bge  	x27,	x23,	PC0x418
+PC0xb30:	bgeu 	x3,		x5,		PC0x528
+PC0xb34:	sub  	x10,	x2,		x4
+PC0xb38:	add  	x22,	x4,		x1
+PC0xb3c:	mul  	x19,	x31,	x30
+PC0xb40:	sub  	x9,		x8,		x1
+PC0xb44:	bne  	x3,		x24,	PC0x9f8
+PC0xb48:	blt  	x12,	x18,	PC0xc88
+PC0xb4c:	sltu 	x28,	x20,	x8
+PC0xb50:	blt  	x3,		x15,	PC0x6cc
+PC0xb54:	bltu 	x27,	x25,	PC0x8d8
+PC0xb58:	sub  	x18,	x8,		x5
+PC0xb5c:	blt  	x1,		x2,		PC0x618
+PC0xb60:	blt  	x2,		x10,	PC0x6d4
+PC0xb64:	mul  	x19,	x0,		x2
+PC0xb68:	sub  	x21,	x15,	x15
+PC0xb6c:	add  	x25,	x14,	x30
+PC0xb70:	xori 	x27,	x10,	-931
+PC0xb74:	blt  	x11,	x27,	PC0x7e4
+PC0xb78:	blt  	x25,	x16,	PC0xba8
+PC0xb7c:	add  	x17,	x16,	x17
+PC0xb80:	bge  	x13,	x12,	PC0xa64
+PC0xb84:	nop  
+PC0xb88:	sub  	x15,	x25,	x29
+PC0xb8c:	blt  	x29,	x2,		PC0x87c
+PC0xb90:	srai 	x3,		x22,	27
+PC0xb94:	bne  	x24,	x11,	PC0x380
+PC0xb98:	bne  	x9,		x28,	PC0x344
+PC0xb9c:	add  	x25,	x29,	x16
+PC0xba0:	bltu 	x9,		x1,		PC0x3e8
+PC0xba4:	bge  	x8,		x17,	PC0x664
+PC0xba8:	addi 	x2,		x11,	-185
+PC0xbac:	bge  	x29,	x30,	PC0x588
+PC0xbb0:	sub  	x3,		x2,		x23
+PC0xbb4:	bge  	x23,	x8,		PC0xa1c
+PC0xbb8:	slli 	x29,	x17,	19
+PC0xbbc:	slli 	x5,		x13,	26
+PC0xbc0:	blt  	x25,	x2,		PC0x3f8
+PC0xbc4:	blt  	x29,	x0,		PC0x9d4
+PC0xbc8:	mulh 	x25,	x6,		x17
+PC0xbcc:	bge  	x4,		x27,	PC0x8c8
+PC0xbd0:	ori  	x21,	x1,		-557
+PC0xbd4:	bgeu 	x23,	x4,		PC0x10c
+PC0xbd8:	add  	x9,		x3,		x15
+PC0xbdc:	sub  	x10,	x26,	x16
+PC0xbe0:	mul  	x28,	x3,		x4
+PC0xbe4:	bgeu 	x3,		x3,		PC0x5e8
+PC0xbe8:	mul  	x29,	x11,	x28
+PC0xbec:	bltu 	x21,	x11,	PC0x514
+PC0xbf0:	mul  	x11,	x24,	x15
+PC0xbf4:	bne  	x17,	x25,	PC0x37c
+PC0xbf8:	srl  	x10,	x14,	x23
+PC0xbfc:	xor  	x5,		x18,	x29
+PC0xc00:	mulh 	x28,	x6,		x6
+PC0xc04:	sltiu	x13,	x13,	1220
+PC0xc08:	sub  	x4,		x29,	x0
+PC0xc0c:	nop  
+PC0xc10:	bltu 	x16,	x16,	PC0x90
+PC0xc14:	jal  	x11,			PC0x3ac
+PC0xc18:	mul  	x20,	x14,	x15
+PC0xc1c:	mulh 	x27,	x21,	x9
+PC0xc20:	sub  	x15,	x17,	x0
+PC0xc24:	add  	x15,	x29,	x19
+PC0xc28:	mul  	x17,	x10,	x20
+PC0xc2c:	bge  	x8,		x2,		PC0xacc
+PC0xc30:	bltu 	x30,	x6,		PC0x5bc
+PC0xc34:	beq  	x4,		x26,	PC0x188
+PC0xc38:	bge  	x6,		x11,	PC0x6c8
+PC0xc3c:	blt  	x18,	x15,	PC0x6a8
+PC0xc40:	sub  	x19,	x27,	x11
+PC0xc44:	add  	x19,	x30,	x9
+PC0xc48:	add  	x6,		x15,	x19
+PC0xc4c:	bltu 	x7,		x29,	PC0x798
+PC0xc50:	bne  	x29,	x13,	PC0x1dc
+PC0xc54:	mul  	x29,	x4,		x26
+PC0xc58:	blt  	x29,	x12,	PC0x918
+PC0xc5c:	bge  	x21,	x25,	PC0xc60
+PC0xc60:	add  	x28,	x27,	x23
+PC0xc64:	add  	x15,	x4,		x21
+PC0xc68:	beq  	x24,	x27,	PC0x52c
+PC0xc6c:	mul  	x20,	x4,		x11
+PC0xc70:	bne  	x1,		x17,	PC0x5b0
+PC0xc74:	sra  	x13,	x15,	x30
+PC0xc78:	xori 	x20,	x5,		-1567
+PC0xc7c:	jal  	x15,			PC0xce4
+PC0xc80:	bltu 	x21,	x30,	PC0x3e8
+PC0xc84:	beq  	x5,		x7,		PC0x33c
+PC0xc88:	mul  	x7,		x4,		x28
+PC0xc8c:	mulh 	x9,		x5,		x31
+PC0xc90:	jal  	x12,			PC0xca8
+PC0xc94:	ori  	x13,	x16,	-800
+PC0xc98:	blt  	x28,	x31,	PC0x77c
+PC0xc9c:	sub  	x9,		x23,	x6
+PC0xca0:	bne  	x21,	x12,	PC0x520
+PC0xca4:	bge  	x19,	x26,	PC0x8d4
+PC0xca8:	bne  	x7,		x25,	PC0x3fc
+PC0xcac:	sra  	x6,		x4,		x16
+PC0xcb0:	slt  	x14,	x0,		x29
+PC0xcb4:	and  	x23,	x10,	x17
+PC0xcb8:	beq  	x24,	x8,		PC0x5e0
+PC0xcbc:	mulh 	x16,	x20,	x19
+PC0xcc0:	add  	x22,	x17,	x14
+PC0xcc4:	bgeu 	x26,	x9,		PC0x264
+PC0xcc8:	bltu 	x4,		x28,	PC0x8c8
+PC0xccc:	beq  	x7,		x1,		PC0xf0
+PC0xcd0:	xor  	x11,	x6,		x5
+PC0xcd4:	beq  	x30,	x31,	PC0x340
+PC0xcd8:	mulh 	x26,	x13,	x6
+PC0xcdc:	beq  	x26,	x18,	PC0x254
+PC0xce0:	mul  	x22,	x7,		x22
+PC0xce4:	addi 	x5,		x0,		-1992
+PC0xce8:	blt  	x16,	x14,	PC0xa9c
+PC0xcec:	sub  	x18,	x11,	x17
+PC0xcf0:	bltu 	x26,	x20,	PC0x260
+PC0xcf4:	bltu 	x25,	x19,	PC0x424
+PC0xcf8:	bge  	x8,		x20,	PC0x2ec
+PC0xcfc:	srai 	x9,		x8,		24
+wfi

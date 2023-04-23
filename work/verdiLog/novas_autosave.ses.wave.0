@@ -1,0 +1,80 @@
+Magic 271485
+Revision Verdi_O-2018.09-SP2
+
+; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
+viewPort 0 27 3638 768 354 65
+
+; File list:
+; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
+openDirFile -d / "" "/home/ICer/Desktop/DV/cpu/work/dump.fsdb"
+
+; file time scale:
+; fileTimeScale ### s|ms|us|ns|ps
+
+; signal spacing:
+signalSpacing 5
+
+; windowTimeUnit is used for zoom, cursor & marker
+; waveform viewport range
+zoom 13168292.587196 13381707.412804
+cursor 13275000.000000
+marker 0.000000
+
+; user define markers
+; userMarker time_pos marker_name color linestyle
+; visible top row signal index
+top 0
+; marker line index
+markerPos 27
+
+; event list
+; addEvent event_name event_expression
+; curEvent event_name
+
+
+
+COMPLEX_EVENT_BEGIN
+
+
+COMPLEX_EVENT_END
+
+
+
+; toolbar current search type
+; curSTATUS search_type
+curSTATUS ByValue
+
+
+addGroup "m_front_end_if(front_end_if)"
+activeDirFile "" "/home/ICer/Desktop/DV/cpu/work/dump.fsdb"
+addSignal -h 15 /top_tb/m_front_end_if/clk
+addSignal -h 15 -holdScope rst_n
+addSignal -expanded -h 15 -holdScope fetch_pkt[0:3]
+addSignal -h 15 -holdScope fetch_pkt[0]
+addSignal -h 15 -holdScope fetch_pkt[1]
+addSignal -h 15 -holdScope fetch_pkt[2]
+addSignal -expanded -h 15 -holdScope fetch_pkt[3]
+addSignal -h 15 -holdScope fetch_pkt[3].inst[31:0]
+addSignal -h 15 -holdScope fetch_pkt[3].pc[31:0]
+addSignal -h 15 -holdScope fetch_pkt[3].branch_mask
+addSignal -h 15 -holdScope fetch_pkt[3].branch_dir
+addSignal -h 15 -holdScope fetch_pkt[3].branch_addr[31:0]
+addSignal -h 15 -holdScope fetch_pkt[3].packet_valid
+addSignal -h 15 -holdScope fetch_pkt_ready[3:0]
+addSignal -expanded -h 15 -holdScope retire_br[3:0]
+addSignal -h 15 -holdScope retire_br[3]
+addSignal -h 15 -holdScope retire_br[2]
+addSignal -h 15 -holdScope retire_br[1]
+addSignal -h 15 -holdScope retire_br[0]
+addSignal -h 15 -holdScope retire_br_pc[0:3]
+addSignal -h 15 -holdScope retire_br_dir[3:0]
+addSignal -h 15 -holdScope retire_br_misp
+addSignal -h 15 -holdScope retire_redirect_pc[31:0]
+addSignal -h 15 -holdScope retire_valid[3:0]
+addSignal -h 15 -holdScope fetch_pkt_d0[0:3]
+addSignal -h 15 -holdScope fetch_pkt_d1[0:3]
+addGroup "G2"
+
+; getSignalForm Scope Hierarchy Status
+; active file of getSignalForm
+

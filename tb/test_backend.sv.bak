@@ -1,0 +1,1102 @@
+`timescale 1ns/100ps
+`include "uvm_macros.svh"
+
+import uvm_pkg::*;
+`include "backend_if.sv"
+
+
+module top_tb();
+                                	
+	logic							clk									;
+	logic							rst_n								;
+
+	FETCH_PACKET 					fetch_pkt		[0:`MACHINE_WIDTH-1];
+	FETCH_PACKET 					fetch_pkt_d0	[0:`MACHINE_WIDTH-1];
+	FETCH_PACKET 					fetch_pkt_d1	[0:`MACHINE_WIDTH-1];
+	logic  	[`MACHINE_WIDTH-1:0]   	fetch_pkt_ready						;
+	logic							fetch_br_misp						;
+	logic	[`XLEN-1:0]				fetch_redirect_pc					;
+
+	logic	[`XLEN-1:0]				fire_st_addr		 				;
+	logic	[`XLEN-1:0]				fire_st_data		 				;
+	logic	[2:0]					fire_st_data_size	 				;
+	logic	[`STQ_WIDTH-1:0]		fire_st_stq_tag						;
+	logic							fire_st_valid		 				;
+	logic							fire_st_ready		 				;
+
+	logic	[`XLEN-1:0]				fire_ld_addr						;
+	logic	[2:0]					fire_ld_data_size					;
+	logic	[`LDQ_WIDTH-1:0]		fire_ld_ldq_tag						;
+	logic							fire_ld_valid						;
+	logic							fire_ld_ready						;
+	logic	[`LDQ_DEPTH-1:0]		fire_ld_kill			            ;
+                        
+	logic	[`XLEN-1:0]				dcache_data							;
+	logic	[`LDQ_WIDTH-1:0]		dcache_ldq_tag						;
+	logic							dcache_valid						;
+	logic							dcache_ready						;
+
+    backend_if                      b_if(clk, rst_n);
+
+
+    integer                     	writeback_file_handle ;
+    integer                     	rs_log_file_handle ;
+    integer                     	rob_log_file_handle ;
+
+	bit		[63:0]					unified_mem			[0:8191]			; 
+	logic	[`XLEN-1:0]				retire_pc			[0:`MACHINE_WIDTH-1];
+	logic	[`PRF_WIDTH-1:0]		retire_dest_prn		[0:`MACHINE_WIDTH-1];
+	logic	[`ARF_WIDTH-1:0]		retire_dest_arn		[0:`MACHINE_WIDTH-1];
+	logic	[`XLEN-1:0]				retire_data			[0:`MACHINE_WIDTH-1];
+	logic	[`MACHINE_WIDTH-1:0]	retire_valid							;
+	EXCEPTION_CODE					retire_exception	[0:`MACHINE_WIDTH-1];
+
+
+	bit [31:0]						clk_cnt =0;
+	bit [31:0] 						instr_cnt = 0;
+	bit [31:0]						timestamp_start = 0;
+	bit [31:0]						timestamp_stop = 0;
+
+	integer max_num_instr;
+
+
+    `ifdef DUMP_FSDB
+    initial begin
+        $fsdbDumpSVA();
+        //$fsdbDumpMDA();
+        $fsdbDumpvars(0, top_tb,"+all");
+    end
+    `endif
+
+	initial begin
+  		$value$plusargs("max_num_instr=%d", max_num_instr);
+  		$display("max_num_instr is %0d", max_num_instr);
+	end
+    
+    initial begin
+       uvm_config_db#(virtual backend_if)::set(null, "*", "vif", b_if);
+    end
+
+
+	genvar i;
+	generate
+		for(i=0;i<`MACHINE_WIDTH;i=i+1) begin
+			assign retire_pc[i]			= u_backend.pipe_retire_pkt[i].pc;
+			assign retire_dest_prn[i]	= u_backend.pipe_retire_pkt[i].dest_prn;
+			assign retire_dest_arn[i]	= u_backend.pipe_retire_pkt[i].dest_arn;
+			assign retire_exception[i]	= u_backend.pipe_retire_pkt[i].exception;
+			assign retire_valid[i]		= u_backend.pipe_retire_pkt[i].packet_valid;
+			assign retire_data[i]		= u_backend.u_prf.registers[retire_dest_prn[i]];
+		end
+	endgenerate
+
+
+
+	backend u_backend (
+		.clk					(clk					),
+		.rst_n					(rst_n					),
+		                    	                    	
+		.fetch_pkt				(fetch_pkt_d1			),
+		.fetch_pkt_ready		(fetch_pkt_ready		),
+		.fetch_br_misp			(fetch_br_misp			),
+		.fetch_redirect_pc		(fetch_redirect_pc		),
+                            	                    	
+		.fire_st_addr			(fire_st_addr			),	
+		.fire_st_data			(fire_st_data			),
+		.fire_st_data_size		(fire_st_data_size		),
+		.fire_st_stq_tag		(fire_st_stq_tag		),
+		.fire_st_valid			(fire_st_valid			),
+		.fire_st_ready			(fire_st_ready			),
+                            	                    	
+		.fire_ld_addr			(fire_ld_addr			),	 
+		.fire_ld_data_size		(fire_ld_data_size		),	
+		.fire_ld_ldq_tag		(fire_ld_ldq_tag		),		
+		.fire_ld_valid			(fire_ld_valid			),	
+		.fire_ld_ready			(fire_ld_ready			),	
+		.fire_ld_kill			(fire_ld_kill			),
+
+		.dcache_data			(dcache_data			),
+		.dcache_ldq_tag			(dcache_ldq_tag			),
+		.dcache_valid			(dcache_valid			),
+		.dcache_ready			(dcache_ready			)
+	);	
+
+
+
+
+	always@(posedge clk or negedge rst_n) begin
+		if(~rst_n) begin
+			foreach(fetch_pkt_d0[i]) fetch_pkt_d0[i]<= 0;
+			foreach(fetch_pkt_d1[i]) fetch_pkt_d1[i]<= 0;
+		end
+		else if(fetch_br_misp) begin
+			foreach(fetch_pkt_d0[i]) fetch_pkt_d0[i]<= 0;
+			foreach(fetch_pkt_d1[i]) fetch_pkt_d1[i]<= 0;
+		end
+		else if(fetch_pkt_ready==4'b1111) begin
+			foreach(fetch_pkt_d0[i]) fetch_pkt_d0[i]<= fetch_pkt[i];
+			foreach(fetch_pkt_d1[i]) fetch_pkt_d1[i]<= fetch_pkt_d0[i];
+		end
+		//else
+		//	foreach(fetch_pkt_d0[i]) fetch_pkt_d0[i]<= 0;
+	end
+
+ 
+
+	
+	always begin
+		#5;
+		clk=~clk;
+	end
+
+
+	always@(posedge clk) begin
+		if($urandom_range(1,100)<=50) //50% time ready
+			fire_st_ready <= 1;
+		else
+			fire_st_ready <= 0;
+		if($urandom_range(1,100)<=50) //50% time ready
+			fire_ld_ready <= 1;
+		else
+			fire_ld_ready <= 0;
+	end
+
+	task store_mem;
+		forever begin
+			@(posedge clk)
+			if(fire_st_valid && fire_st_ready) begin
+				//if(fire_st_addr[2]) begin
+				//	case(MEM_SIZE'(fire_st_data_size[1:0]))
+				//		BYTE:unified_mem[fire_st_addr/8][7+32:32]	<= fire_st_data[7:0];
+				//		HALF:unified_mem[fire_st_addr/8][15+32:32] 	<= fire_st_data[15:0];
+				//		WORD:unified_mem[fire_st_addr/8][31+32:32] 	<= fire_st_data[31:0];
+				//	endcase
+				//end
+				//else begin
+				//	case(MEM_SIZE'(fire_st_data_size[1:0]))
+				//		BYTE:unified_mem[fire_st_addr/8][7:0]	<= fire_st_data[7:0];
+				//		HALF:unified_mem[fire_st_addr/8][15:0] 	<= fire_st_data[15:0];
+				//		WORD:unified_mem[fire_st_addr/8][31:0] 	<= fire_st_data[31:0];
+				//	endcase
+				//end
+				
+			//	if(fire_st_addr[2]) begin
+					case(MEM_SIZE'(fire_st_data_size[1:0]))
+						BYTE:unified_mem[fire_st_addr/8][fire_st_addr[2:0]*8+:8]	<= fire_st_data[7:0];
+						HALF:unified_mem[fire_st_addr/8][fire_st_addr[2:1]*16+:16] 	<= fire_st_data[15:0];
+						WORD:unified_mem[fire_st_addr/8][fire_st_addr[2]*32+:32] 	<= fire_st_data[31:0];
+					endcase
+			//	end
+			//	else begin
+			//		case(MEM_SIZE'(fire_st_data_size[1:0]))
+			//			BYTE:unified_mem[fire_st_addr/8][7:0]	<= fire_st_data[7:0];
+			//			HALF:unified_mem[fire_st_addr/8][15:0] 	<= fire_st_data[15:0];
+			//			WORD:unified_mem[fire_st_addr/8][31:0] 	<= fire_st_data[31:0];
+			//		endcase
+			//	end
+
+			end
+		end
+	endtask
+
+
+
+	task load_mem(int hit_rate);
+		logic [31:0]			ld_addr_q [$];
+		logic [2:0] 			ld_size_q [$];
+		logic [`LDQ_WIDTH-1:0] 	ld_ldq_tag_q [$];
+		logic [31:0]			curr_ld_addr;
+		logic [2:0] 			curr_ld_size;
+		logic [`LDQ_WIDTH-1:0] 	curr_ld_ldq_tag;
+		logic					kill_curr_req = 0;
+		logic [7:0]				byte_level;
+		logic [15:0]			half_level;
+		logic [31:0]			word_level;
+		int 					cyc_untill_next;
+		logic [1:0]				ld_offset_start;
+		logic [1:0]				ld_offset_end;
+		logic [1:0]				st_offset_start;
+		logic [1:0]				st_offset_end;
+		logic 					addr_conflict;
+		
+
+
+		fork
+			forever begin
+				@(posedge clk)
+				if(fire_ld_valid && fire_ld_ready) begin
+					ld_addr_q.push_back(fire_ld_addr);
+					ld_size_q.push_back(fire_ld_data_size);
+					ld_ldq_tag_q.push_back(fire_ld_ldq_tag);
+				end
+				if(fire_ld_kill!=0) begin
+					//every time you delete an item, the next item is moved into the current index that you just compared, and is skipped over
+					//foreach(ld_ldq_tag_q[i]) begin
+					//	if(fire_ld_kill[ld_ldq_tag_q[i]]) begin
+					//		ld_addr_q.delete(i);
+					//		ld_size_q.delete(i);
+					//		ld_ldq_tag_q.delete(i);
+					//	end
+					//end
+					foreach(fire_ld_kill[i]) begin
+						if(fire_ld_kill[i]==1) begin
+							foreach(ld_ldq_tag_q[j]) begin
+								if(i==ld_ldq_tag_q[j]) begin
+									ld_addr_q.delete(j);
+									ld_size_q.delete(j);
+									ld_ldq_tag_q.delete(j);
+								end
+							end
+						end
+					end	
+
+				end
+				if(u_backend.pipe_flush) begin
+					ld_addr_q.delete;
+					ld_size_q.delete;
+					ld_ldq_tag_q.delete;
+				end
+			end
+
+
+			forever begin
+				@(posedge clk)
+				if(u_backend.pipe_flush) begin
+					dcache_ldq_tag 	<= 0;
+					dcache_valid 	<= 0;
+					curr_ld_addr 	<= 0;
+					curr_ld_size 	<= 0;
+					curr_ld_ldq_tag <= 0;
+				end
+				else if(dcache_ready) begin
+					if(ld_addr_q.size!=0) begin
+						curr_ld_addr 	= ld_addr_q.pop_front;
+						curr_ld_size 	= ld_size_q.pop_front;
+						curr_ld_ldq_tag = ld_ldq_tag_q.pop_front;
+					
+						if(fire_ld_kill[curr_ld_ldq_tag])
+							kill_curr_req = 1;
+							
+						if($urandom_range(1,100)<=hit_rate)  //hit
+							cyc_untill_next = 0;
+						else //miss
+							cyc_untill_next = $urandom_range(3,8);
+            			
+						repeat(cyc_untill_next) begin
+							dcache_ldq_tag 	<= 0;
+							dcache_valid 	<= 0;					
+							@(posedge clk);
+							if(u_backend.pipe_flush) begin
+								dcache_ldq_tag 	<= 0;
+								dcache_valid 	<= 0;
+								curr_ld_addr 	<= 0;
+								curr_ld_size 	<= 0;
+								curr_ld_ldq_tag <= 0;
+								kill_curr_req = 1;
+								break;
+							end
+							else if(fire_ld_kill[curr_ld_ldq_tag]) begin
+								kill_curr_req = 1;
+								break;
+							end
+
+						end	
+
+
+						ld_offset_start = 	curr_ld_addr[1:0];
+						ld_offset_end 	= 	MEM_SIZE'(curr_ld_size)==BYTE	?	ld_offset_start+0 :
+						 				 	MEM_SIZE'(curr_ld_size)==HALF	? 	ld_offset_start+1 :
+						 				 	MEM_SIZE'(curr_ld_size)==WORD 	? 	ld_offset_start+3 : 
+						 														ld_offset_start+3 ;
+						st_offset_start	=	fire_st_addr[1:0];
+						st_offset_end	= 	MEM_SIZE'(fire_st_data_size)==BYTE 	? 	st_offset_start+0 :
+											MEM_SIZE'(fire_st_data_size)==HALF	? 	st_offset_start+1 :
+											MEM_SIZE'(fire_st_data_size)==WORD 	? 	st_offset_start+3 : 
+																					st_offset_start+3 ;
+					
+						addr_conflict	=	~(ld_offset_start>=st_offset_start && ld_offset_end<=st_offset_end);
+
+						while(fire_st_valid && fire_st_ready && addr_conflict) begin
+							dcache_ldq_tag 	<= 0;
+							dcache_valid 	<= 0;	
+							@(posedge clk);	//wait store data write to memory
+							if(u_backend.pipe_flush) begin
+								dcache_ldq_tag 	<= 0;
+								dcache_valid 	<= 0;
+								curr_ld_addr 	<= 0;
+								curr_ld_size 	<= 0;
+								curr_ld_ldq_tag <= 0;
+								kill_curr_req = 1;
+								break;
+							end
+							else if(fire_ld_kill[curr_ld_ldq_tag]) begin
+								kill_curr_req = 1;
+								break;
+							end
+						end
+
+						//if(curr_ld_addr[2]) begin
+						//	case(MEM_SIZE'(curr_ld_size[1:0]))
+						//		BYTE:dcache_data <= ~curr_ld_size[2] ? 
+						//							{{(`XLEN-8){unified_mem[curr_ld_addr/8][32+7]}}, unified_mem[curr_ld_addr/8][7+32:32]} :
+						//							{{(`XLEN-8){1'b0}}, unified_mem[curr_ld_addr/8][7+32:32]} ;
+						//		HALF:dcache_data <= ~curr_ld_size[2] ? 
+						//							{{(`XLEN-8){unified_mem[curr_ld_addr/8][32+15]}}, unified_mem[curr_ld_addr/8][15+32:32]} :
+						//							{{(`XLEN-8){1'b0}}, unified_mem[curr_ld_addr/8][15+32:32]} ;
+						//		WORD:dcache_data <= unified_mem[curr_ld_addr/8][31+32:32];
+						//	endcase
+						//end
+						//else begin
+						//	case(MEM_SIZE'(curr_ld_size[1:0]))
+						//		BYTE:dcache_data <= ~curr_ld_size[2] ? 
+						//							{{(`XLEN-8){unified_mem[curr_ld_addr/8][7]}}, unified_mem[curr_ld_addr/8][7:0]} :
+						//							{{(`XLEN-8){1'b0}}, unified_mem[curr_ld_addr/8][7:0]} ;
+						//		HALF:dcache_data <= ~curr_ld_size[2] ? 
+						//							{{(`XLEN-8){unified_mem[curr_ld_addr/8][15]}}, unified_mem[curr_ld_addr/8][15:0]} :
+						//							{{(`XLEN-8){1'b0}}, unified_mem[curr_ld_addr/8][15:0]} ;
+						//		WORD:dcache_data <= unified_mem[curr_ld_addr/8][31:0];
+						//	endcase
+						//end
+						
+						byte_level = unified_mem[curr_ld_addr/8][curr_ld_addr[2:0]*8+:8];
+						half_level = unified_mem[curr_ld_addr/8][curr_ld_addr[2:1]*16+:16];
+						word_level = unified_mem[curr_ld_addr/8][curr_ld_addr[2]*32+:32];
+						
+					//	if(curr_ld_addr[2]) begin
+							case(MEM_SIZE'(curr_ld_size[1:0]))
+								BYTE:dcache_data <= ~curr_ld_size[2] ? 
+													{{(`XLEN-8){byte_level[7]}}, byte_level} :
+													{{(`XLEN-8){1'b0}}, byte_level} ;
+								HALF:dcache_data <= ~curr_ld_size[2] ? 
+													{{(`XLEN-8){half_level[15]}}, half_level} :
+													{{(`XLEN-8){1'b0}}, half_level} ;
+								WORD:dcache_data <= word_level;
+							endcase
+						//end
+						//else begin
+						//	case(MEM_SIZE'(curr_ld_size[1:0]))
+						//		BYTE:dcache_data <= ~curr_ld_size[2] ? 
+						//							{{(`XLEN-8){unified_mem[curr_ld_addr/8][7]}}, unified_mem[curr_ld_addr/8][7:0]} :
+						//							{{(`XLEN-8){1'b0}}, unified_mem[curr_ld_addr/8][7:0]} ;
+						//		HALF:dcache_data <= ~curr_ld_size[2] ? 
+						//							{{(`XLEN-8){unified_mem[curr_ld_addr/8][15]}}, unified_mem[curr_ld_addr/8][15:0]} :
+						//							{{(`XLEN-8){1'b0}}, unified_mem[curr_ld_addr/8][15:0]} ;
+						//		WORD:dcache_data <= unified_mem[curr_ld_addr/8][31:0];
+						//	endcase
+						//end
+
+						if(kill_curr_req) begin
+							dcache_ldq_tag 	<= 0;
+							dcache_valid 	<= 0;
+							kill_curr_req	<= 0;
+						end
+						else begin
+							dcache_ldq_tag 	<= curr_ld_ldq_tag;
+							dcache_valid 	<= 1'b1;
+						end
+						
+					end
+					else if(dcache_valid && dcache_ready) begin
+						dcache_ldq_tag 	<= 0;
+						dcache_valid 	<= 0;	
+					end
+					
+				end
+			end
+		join
+	endtask
+
+
+
+
+
+
+
+	initial begin
+		//$dumpvars;
+		writeback_file_handle = $fopen("writeback.txt");		
+		rs_log_file_handle = $fopen("rs_log.txt");		
+		rob_log_file_handle = $fopen("rob_log.txt");		
+		$readmemh("../test_progs/program.mem",unified_mem);
+
+		clk			<=0;
+		rst_n		<=0;
+		fire_st_ready	<=1;
+		fire_ld_ready	<=1;
+		dcache_valid 	<= 0;	
+		foreach(fetch_pkt[i])	fetch_pkt[i] <= 0;
+
+		repeat(10) @(posedge clk);
+		rst_n=1;
+		repeat(10) @(posedge clk);
+
+
+
+
+		fork
+			drive_one_pkt(unified_mem,80,1,80);
+			store_mem;
+			load_mem(80);
+
+			forever begin
+				foreach(retire_valid[i]) begin
+			   		if(retire_valid[i] && retire_exception[i] != NO_ERROR) begin
+						$display("@@  System has encountered an exception: %s", retire_exception[i]);
+			   			repeat(100) @(posedge clk); //let stq drain out
+						$display("@@@ Unified Memory contents hex on left, decimal on right: ");
+						show_mem_with_decimal(0,`MEM_64BIT_LINES - 1); 
+			   			show_clk_count;
+			   			$fclose(writeback_file_handle);
+			   			$fclose(rs_log_file_handle);
+			   			$fclose(rob_log_file_handle);
+			   			$finish;
+			   		end
+			   	end
+			   	@(posedge clk);
+			end
+		join
+
+
+	end
+
+
+
+
+
+
+
+
+
+//icache hit rate :0-100
+//random_br_dir 1=enable random dir prediction, 0=always taken
+task drive_one_pkt(bit [63:0] unified_mem [0:8191],int hit_rate, bit random_br_dir, int btb_corr_rate);
+	int cyc_untill_next;
+  	logic [31:0] pc = 0; 
+	logic [31:0] next_inst	[0:`MACHINE_WIDTH-1];	
+	logic [31:0] next_pred_target_pc	[0:`MACHINE_WIDTH-1];
+	logic [`MACHINE_WIDTH-1:0] next_is_branch;
+	logic [`MACHINE_WIDTH-1:0] next_pred_dir;
+
+
+	while(1) begin
+		@(posedge clk);
+		if(fetch_br_misp) begin
+			pc <= fetch_redirect_pc;
+			foreach(fetch_pkt[i])	fetch_pkt[i] <= 0;
+		end
+		else if(fetch_pkt_ready==4'b1111)begin
+			foreach(fetch_pkt[i])	fetch_pkt[i] <= 0;
+
+			if($urandom_range(1,100)<=hit_rate)  //hit
+				cyc_untill_next = 0;
+			else //miss
+				cyc_untill_next = $urandom_range(1,10);
+
+			repeat(cyc_untill_next) begin
+				@(posedge clk);
+				if(fetch_br_misp) begin
+					pc <= fetch_redirect_pc;
+					foreach(fetch_pkt[i])	fetch_pkt[i] <= 0;
+					break;
+				end
+			end
+			if(fetch_br_misp) continue;
+			
+			next_inst[0] = unified_mem[{pc[31:4],4'b0}/8][31:0];
+			next_inst[1] = unified_mem[{pc[31:4],4'b0}/8][63:32];
+			next_inst[2] = unified_mem[({pc[31:4],4'b0}+8)/8][31:0];
+			next_inst[3] = unified_mem[({pc[31:4],4'b0}+8)/8][63:32];
+			if($urandom_range(1,100)<=btb_corr_rate) begin  //correct
+				next_pred_target_pc[0] = 	next_inst[0][6:0] == 7'b1101111 ? 
+											{pc[31:4],4'b0}+0 + `RV32_signext_Jimm(next_inst[0]) : 
+											{pc[31:4],4'b0}+0 + `RV32_signext_Bimm(next_inst[0]);
+				next_pred_target_pc[1] = 	next_inst[1][6:0] == 7'b1101111 ? 
+											{pc[31:4],4'b0}+4 + `RV32_signext_Jimm(next_inst[1]) : 
+											{pc[31:4],4'b0}+4 + `RV32_signext_Bimm(next_inst[1]);
+				next_pred_target_pc[2] = 	next_inst[2][6:0] == 7'b1101111 ? 
+											{pc[31:4],4'b0}+8 + `RV32_signext_Jimm(next_inst[2]) : 
+											{pc[31:4],4'b0}+8 + `RV32_signext_Bimm(next_inst[2]);
+				next_pred_target_pc[3] = 	next_inst[3][6:0] == 7'b1101111 ? 
+											{pc[31:4],4'b0}+12+ `RV32_signext_Jimm(next_inst[3]) : 
+											{pc[31:4],4'b0}+12+ `RV32_signext_Bimm(next_inst[3]);
+			end
+			else begin//wrong
+				next_pred_target_pc[0] = 0;
+				next_pred_target_pc[1] = 0;
+				next_pred_target_pc[2] = 0;
+				next_pred_target_pc[3] = 0;
+			end
+			next_is_branch[0] = ~(pc[3:0]>0) 	&& 	(next_inst[0][6:0] == 7'b1100011 ||
+													 next_inst[0][6:0] == 7'b1100111 ||
+													 next_inst[0][6:0] == 7'b1101111 );
+			next_is_branch[1] = ~(pc[3:0]>4) 	&& 	(next_inst[1][6:0] == 7'b1100011 ||
+													 next_inst[1][6:0] == 7'b1100111 ||
+													 next_inst[1][6:0] == 7'b1101111 );
+			next_is_branch[2] = ~(pc[3:0]>8) 	&& 	(next_inst[2][6:0] == 7'b1100011 ||
+													 next_inst[2][6:0] == 7'b1100111 ||
+													 next_inst[2][6:0] == 7'b1101111 );
+			next_is_branch[3] = ~(pc[3:0]>12) 	&& 	(next_inst[3][6:0] == 7'b1100011 ||
+													 next_inst[3][6:0] == 7'b1100111 ||
+													 next_inst[3][6:0] == 7'b1101111 );
+
+			next_pred_dir[0] = random_br_dir ? $urandom_range(0,1) : 1;
+			next_pred_dir[1] = random_br_dir ? $urandom_range(0,1) : 1;
+			next_pred_dir[2] = random_br_dir ? $urandom_range(0,1) : 1;
+			next_pred_dir[3] = random_br_dir ? $urandom_range(0,1) : 1;
+
+
+			
+
+			fetch_pkt[0].inst 			<= next_inst[0];
+			fetch_pkt[1].inst 			<= next_inst[1];
+			fetch_pkt[2].inst 			<= next_inst[2];
+			fetch_pkt[3].inst 			<= next_inst[3];
+			fetch_pkt[0].pc 			<= {pc[31:4],4'b0};
+			fetch_pkt[1].pc 			<= {pc[31:4],4'b0}+4;
+			fetch_pkt[2].pc 			<= {pc[31:4],4'b0}+8;
+			fetch_pkt[3].pc 			<= {pc[31:4],4'b0}+12;
+			fetch_pkt[0].packet_valid 	<= 	~(pc[3:0]>0);
+			fetch_pkt[1].packet_valid 	<= 	~(pc[3:0]>4) &&
+											~(next_is_branch[0] && next_pred_dir[0]);
+			fetch_pkt[2].packet_valid 	<=	~(pc[3:0]>8) &&
+											~(next_is_branch[0] && next_pred_dir[0]) && 
+											~(next_is_branch[1] && next_pred_dir[1]);
+			fetch_pkt[3].packet_valid 	<= 	~(pc[3:0]>12) &&
+											~(next_is_branch[0] && next_pred_dir[0]) &&
+											~(next_is_branch[1] && next_pred_dir[1]) &&	
+											~(next_is_branch[2] && next_pred_dir[2]);	
+
+			fetch_pkt[0].branch_mask	<= next_is_branch[0];
+			fetch_pkt[1].branch_mask	<= next_is_branch[1];
+			fetch_pkt[2].branch_mask	<= next_is_branch[2];
+			fetch_pkt[3].branch_mask	<= next_is_branch[3];
+
+			if(next_is_branch[0] && next_pred_dir[0]) begin //branch taken
+				fetch_pkt[0].branch_dir <= 1;
+				fetch_pkt[0].branch_addr <= next_pred_target_pc[0];
+				pc <= next_pred_target_pc[0]; 
+			end
+			else if(next_is_branch[1] && next_pred_dir[1]) begin //branch taken
+				fetch_pkt[1].branch_dir <= 1;
+				fetch_pkt[1].branch_addr <= next_pred_target_pc[1];
+				pc <= next_pred_target_pc[1]; 
+			end
+			else if(next_is_branch[2] && next_pred_dir[2]) begin //branch taken
+				fetch_pkt[2].branch_dir <= 1;
+				fetch_pkt[2].branch_addr <= next_pred_target_pc[2];
+				pc <= next_pred_target_pc[2]; 
+			end
+			else if(next_is_branch[3] && next_pred_dir[3]) begin //branch taken
+				fetch_pkt[3].branch_dir <= 1;
+				fetch_pkt[3].branch_addr <= next_pred_target_pc[3];
+				pc <= next_pred_target_pc[3]; 
+			end
+			else begin
+				if(pc[3:0]==0)
+					pc <= pc+16;
+				else if(pc[3:0]==4)
+					pc <= pc+12;
+				else if(pc[3:0]==8)
+					pc <= pc+8;
+				else if(pc[3:0]==12)
+					pc <= pc+4;
+			end
+			
+		end
+	end
+
+endtask
+
+	
+
+
+
+
+
+
+	// Show contents of a range of Unified Memory, in both hex and decimal
+	task show_mem_with_decimal;
+		input [31:0] start_addr;
+		input [31:0] end_addr;
+		int showing_data;
+		int k;
+		logic [`STQ_WIDTH-1:0] stq_head_ptr;
+		logic [`STQ_WIDTH-1:0] next_stq_head_ptr;
+		logic [`XLEN-1:0]	   next_st_addr;
+		logic [`XLEN-1:0]	   next_st_data;
+		MEM_SIZE			   next_st_size;
+		begin
+			$display("@@@");
+			showing_data=0;
+			stq_head_ptr=u_backend.u_lsq.u_stq.head_ptr;
+			$display("head %d", stq_head_ptr);
+			for(k=start_addr;k<=end_addr; k=k+1) begin
+				foreach(u_backend.u_lsq.u_stq.stq_entry[i]) begin
+					next_stq_head_ptr = i+stq_head_ptr;	
+					next_st_addr = u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr;
+					next_st_data = u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data;
+					next_st_size = MEM_SIZE'(u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data_size[1:0]);
+					if(u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].entry_valid && u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].retired && k*8=={u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr[31:3],3'b0}) begin
+						//if(u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr[2]) begin
+						//	case(u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data_size)
+						//		BYTE:	unified_mem[u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr/8][7+32:32]	= u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data[7:0];
+						//		HALF: 	unified_mem[u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr/8][15+32:32] 	= u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data[15:0];
+						//		WORD: 	unified_mem[u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr/8][31+32:32] 	= u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data[31:0];
+						//	endcase
+						//end
+						//else begin
+						//	case(u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data_size)
+						//		BYTE:	unified_mem[u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr/8][7:0]	= u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data[7:0];
+						//		HALF: 	unified_mem[u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr/8][15:0] 	= u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data[15:0];
+						//		WORD: 	unified_mem[u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].addr/8][31:0] 	= u_backend.u_lsq.u_stq.stq_entry[next_stq_head_ptr].data[31:0];
+						//	endcase
+						//end
+						case(next_st_size)
+							BYTE:unified_mem[next_st_addr/8][next_st_addr[2:0]*8+:8]	= next_st_data[7:0];
+							HALF:unified_mem[next_st_addr/8][next_st_addr[2:1]*16+:16] 	= next_st_data[15:0];
+							WORD:unified_mem[next_st_addr/8][next_st_addr[2]*32+:32] 	= next_st_data[31:0];
+						endcase
+					end
+				end
+				if (unified_mem[k] != 0) begin
+					$display("@@@ mem[%5d] = %x : %0d", k*8, unified_mem[k], 
+				                                            unified_mem[k]);
+					showing_data=1;
+				end 
+				else if(showing_data!=0) begin
+					$display("@@@");
+					showing_data=0;
+				end
+			end
+			$display("@@@");
+		end
+	endtask  // task show_mem_with_decimal
+
+
+
+
+
+	/*********************************cpi log***********************************/
+	always@(posedge clk or negedge rst_n) begin
+		if(~rst_n) begin
+   			clk_cnt <= 0;
+			instr_cnt <= 0;
+		end
+		else begin
+			clk_cnt 	<= 	clk_cnt + 1;
+			instr_cnt 	<= 	instr_cnt + 
+							retire_valid[0] + 
+							retire_valid[1] + 
+							retire_valid[2] +
+							retire_valid[3] ;
+			if(instr_cnt>=max_num_instr) begin
+				$display("@@@ Unified Memory contents hex on left, decimal on right: ");
+				show_mem_with_decimal(0,`MEM_64BIT_LINES - 1);
+				$fclose(writeback_file_handle);
+		 		$fclose(rs_log_file_handle);
+	  			$fclose(rob_log_file_handle);			   	
+		   		$finish;
+			end
+			if(clk_cnt>=max_num_instr*10) begin 
+				$display("@@@ Unified Memory contents hex on left, decimal on right: ");
+				show_mem_with_decimal(0,`MEM_64BIT_LINES - 1);
+				$fdisplay(writeback_file_handle, "TIMEOUT");
+				$display("TIMEOUT");
+				$fclose(writeback_file_handle);
+		 		$fclose(rs_log_file_handle);
+	  			$fclose(rob_log_file_handle);
+				$finish;
+			end
+		end
+	end
+
+	task show_clk_count;
+		real cpi;
+		
+		begin
+			cpi = (timestamp_stop-timestamp_start + 1.0) / instr_cnt;
+			$display("@@  %0d cycles / %0d instrs = %f CPI",
+			         (timestamp_stop-timestamp_start) , instr_cnt, cpi);
+		end
+	endtask  // task show_clk_count 
+
+
+	initial begin
+		forever begin
+			if(fetch_pkt[0].packet_valid) break;
+			else @(posedge clk);
+		end
+		
+		timestamp_start = clk_cnt;
+
+		forever begin
+			foreach(retire_valid[i]) begin 
+				if(retire_valid[i] && retire_exception[i] != NO_ERROR) begin
+					timestamp_stop = clk_cnt;
+				end
+			end
+			`ifdef DEBUG
+			print_rs_bank();
+			print_rob();
+			`endif
+			@(posedge clk);		
+		end
+	end
+
+
+
+	/*********************************retire log***********************************/
+	initial begin
+		forever begin
+			for(int i=0;i<`MACHINE_WIDTH;i++) begin
+				if(retire_valid[i])	begin
+					if(retire_exception[i] == NO_ERROR && retire_dest_prn[i]!=`ZERO_REG) begin
+						//$display("PC=%x, REG[%d]=%x",
+						//			retire_pc[i],
+						//			retire_dest_arn[i],
+						//			retire_data[i]);
+						$fdisplay(writeback_file_handle, "PC=%x, REG[%d]=%x",
+									retire_pc[i],
+									retire_dest_arn[i],
+									retire_data[i]);
+					end
+					else begin
+						//$display("PC=%x, ---", retire_pc[i]);
+						$fdisplay(writeback_file_handle, "PC=%x, ---", retire_pc[i]);
+					end
+				end
+			end
+			@(posedge clk);
+		end	
+	end
+
+
+
+
+	/**********************************rob log************************************/
+	task print_rob();
+		ROB_ENTRY	rob_entry	[0:`ROB_DEPTH-1];
+		logic		[`ROB_WIDTH-1:0]		head_ptr;
+		logic		[`ROB_WIDTH-1:0]		tail_ptr;
+
+		begin
+			rob_entry 	= u_backend.u_rob.rob_entry;
+			head_ptr 	= u_backend.u_rob.head_ptr;
+			tail_ptr 	= u_backend.u_rob.tail_ptr;
+			foreach(rob_entry[i]) begin
+				$fwrite(rob_log_file_handle, "%h", 	rob_entry[i].complete & rob_entry[i].valid);
+			end
+				$fwrite(rob_log_file_handle, "	");
+				$fwrite(rob_log_file_handle, "Cycle:%0d", clk_cnt-timestamp_start);
+				$fwrite(rob_log_file_handle, "	");
+				$fwrite(rob_log_file_handle, "Time:%0t", $time);
+				$fwrite(rob_log_file_handle, "\n");
+			if(head_ptr<tail_ptr) begin
+				for(int j=0;j<head_ptr;j++)
+					$fwrite(rob_log_file_handle, " ");
+				$fwrite(rob_log_file_handle, "H");
+				for(int j=0;j<(tail_ptr-head_ptr-1);j++)
+					$fwrite(rob_log_file_handle, " ");
+				$fwrite(rob_log_file_handle, "T");
+				$fwrite(rob_log_file_handle, "\n");
+			end
+			else if(head_ptr>tail_ptr) begin
+				for(int j=0;j<tail_ptr;j++)
+					$fwrite(rob_log_file_handle, " ");
+				$fwrite(rob_log_file_handle, "T");
+				for(int j=0;j<(head_ptr-tail_ptr-1);j++)
+					$fwrite(rob_log_file_handle, " ");
+				$fwrite(rob_log_file_handle, "H");
+				$fwrite(rob_log_file_handle, "\n");
+			end
+			else begin
+				for(int j=0;j<head_ptr;j++)
+					$fwrite(rob_log_file_handle, " ");
+				$fwrite(rob_log_file_handle, "S");
+				$fwrite(rob_log_file_handle, "\n");
+			end
+		end
+	endtask
+
+
+
+
+
+
+
+	/*********************************issue log***********************************/
+	task print_rs_bank();
+		logic					rs_in_use		;        	
+		logic [31:0]			rs_pc			;
+		logic [`ROB_WIDTH:0]	rs_rob_entry	;		
+		FU_ID					rs_fu_id		;
+		logic					rs_wake_up		;		
+		logic					rs_issued		;		
+
+		begin
+			$fwrite(rs_log_file_handle, "Cycle:%0d", clk_cnt-timestamp_start);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[0].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[0].u_rs1.pc	 	;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[0].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[0].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[0].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[0].u_rs1.rs1_issued	;
+			$fwrite(rs_log_file_handle, "Entry0	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+        	
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[1].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[1].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[1].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[1].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[1].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[1].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry1	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+     
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[2].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[2].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[2].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[2].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[2].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[2].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry2	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[3].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[3].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[3].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[3].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[3].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[3].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry3	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[4].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[4].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[4].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[4].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[4].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[4].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry4	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[5].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[5].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[5].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[5].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[5].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[5].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry5	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[6].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[6].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[6].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[6].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[6].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[6].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry6	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[7].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[7].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[7].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[7].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[7].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[7].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry7	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[8].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[8].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[8].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[8].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[8].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[8].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry8	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[9].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[9].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[9].u_rs1.rob_entry	;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[9].u_rs1.fu_id		;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[9].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[9].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry9	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[10].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[10].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[10].u_rs1.rob_entry;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[10].u_rs1.fu_id	;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[10].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[10].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry10	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[11].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[11].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[11].u_rs1.rob_entry;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[11].u_rs1.fu_id	;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[11].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[11].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry11	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[12].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[12].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[12].u_rs1.rob_entry;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[12].u_rs1.fu_id	;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[12].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[12].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry12	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[13].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[13].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[13].u_rs1.rob_entry;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[13].u_rs1.fu_id	;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[13].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[13].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry13	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[14].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[14].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[14].u_rs1.rob_entry;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[14].u_rs1.fu_id	;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[14].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[14].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry14	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			rs_in_use		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[15].u_rs1.in_use	;
+			rs_pc			= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[15].u_rs1.pc		;
+			rs_rob_entry	= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[15].u_rs1.rob_entry;
+			rs_fu_id		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[15].u_rs1.fu_id	;
+			rs_wake_up		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[15].u_rs1.rs1_wake_up		;
+			rs_issued		= u_backend.u_rs_bank_int.u_rs_array.gen_rs1[15].u_rs1.rs1_issued	;
+   			$fwrite(rs_log_file_handle, "Entry15	");
+			$fwrite(rs_log_file_handle, "%h	", 	rs_in_use	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_wake_up	);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_issued	);
+			$fwrite(rs_log_file_handle, "%d	", 	rs_rob_entry[`ROB_WIDTH-1:0]);
+			$fwrite(rs_log_file_handle, "%h	", 	rs_pc		);
+			$fwrite(rs_log_file_handle, "%s	", 	rs_fu_id	);
+			$fwrite(rs_log_file_handle, "\n");
+
+			$fwrite(rs_log_file_handle, "\n");
+			$fwrite(rs_log_file_handle, "\n");
+		end
+
+	endtask
+
+
+
+
+
+
+
+
+
+endmodule
+
+
+
+  
+  
+
