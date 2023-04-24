@@ -47,9 +47,6 @@ module backend (
 	wire [`MACHINE_WIDTH-1:0]	retire_dest_prn_prev_valid						;	
 	wire [`MACHINE_WIDTH-1:0]   retire_dest_prn_prev_ready						;
 
-	wire [`PRF_WIDTH-1:0] 		execute_prn					[0:`ISSUE_WIDTH-1]	;
-	wire [`ISSUE_WIDTH-1:0]		execute_valid									;
-
 	FETCH_PACKET 				ptab_fetch_pkt				[0:`MACHINE_WIDTH-1];
 	wire			 			ptab_ready										;
 	wire [`PTAB_WIDTH-1:0]		ptab_tag					[0:`MACHINE_WIDTH-1];
@@ -61,7 +58,6 @@ module backend (
 	wire [`XLEN-1:0]			bru_next_pc									;
 
 	/********************************ROB Declaration*******************************/
-	wire [`ROB_WIDTH:0]			rob_tag					[0:`MACHINE_WIDTH-1];
 	DISPATCH_RS_PACKET			dispatch_rs_pkt			[0:`MACHINE_WIDTH-1];
 	DISPATCH_ROB_PACKET			dispatch_rob_pkt		[0:`MACHINE_WIDTH-1];
 	wire [`MACHINE_WIDTH-1:0]	dispatch_rob_pkt_ready						 ;
@@ -108,22 +104,16 @@ module backend (
 	EXECUTE_PACKET				pipe_execute_pkt	[0:`ISSUE_WIDTH-1]; 
 	
 	
-	/********************************CDB Declaration*******************************/
-	wire [`ISSUE_WIDTH-1:0]		cdb_valid;
-	wire [`XLEN-1:0]			cdb_pc		[0:`ISSUE_WIDTH-1];
-	wire [`ROB_WIDTH:0]			cdb_rob		[0:`ISSUE_WIDTH-1];
-	wire [`PRF_WIDTH-1:0]		cdb_prn		[0:`ISSUE_WIDTH-1];
-	wire [`XLEN-1:0]			cdb_result	[0:`ISSUE_WIDTH-1];
-	wire						cdb_branch_dir;
-	wire						cdb_branch_misp;
-	wire [`XLEN-1:0]			cdb_redirect_pc;
-	//wire [`STQ_WIDTH-1:0]		cdb_st_addr_stq;
-	//wire [`STQ_WIDTH-1:0]		cdb_st_data_stq;
-	//wire [2:0]				cdb_st_data_size;
-	//wire [`XLEN-1:0]			cdb_st_data;
-	//wire [`XLEN-1:0]			cdb_st_addr;
-	//wire 						cdb_st_data_valid;
-	//wire 						cdb_st_addr_valid;
+	/*****************************Writeback Declaration****************************/
+	wire [`ISSUE_WIDTH-1:0]		writeback_valid;
+	wire [`XLEN-1:0]			writeback_pc		[0:`ISSUE_WIDTH-1];
+	wire [`ROB_WIDTH:0]			writeback_rob		[0:`ISSUE_WIDTH-1];
+	wire [`PRF_WIDTH-1:0]		writeback_prn		[0:`ISSUE_WIDTH-1];
+	wire [`XLEN-1:0]			writeback_result	[0:`ISSUE_WIDTH-1];
+	wire						writeback_branch_dir;
+	wire						writeback_branch_misp;
+	wire [`XLEN-1:0]			writeback_redirect_pc;
+
 
 	/******************************Arch_rat Declaration****************************/
 	wire [`ARF_WIDTH-1:0]		retire_dest_arn	[0:`MACHINE_WIDTH-1];
@@ -158,8 +148,8 @@ module backend (
 		.retire_prn_prev_valid	(retire_dest_prn_prev_valid	),	
 		.retire_prn_prev_ready	(retire_dest_prn_prev_ready	),
 
-		.execute_prn			(execute_prn				),		
-		.execute_valid			(execute_valid				),
+		.writeback_prn			(writeback_prn				),		
+		.writeback_valid		(writeback_valid			),
 
 		.arch_rat				(arch_rat_out				),
 		.recov_arch_st			(recov_arch_st				)	
@@ -193,11 +183,6 @@ module backend (
 
 	genvar i;
 	generate	
-		for(i=0;i<`ISSUE_WIDTH;i=i+1) begin
-			assign execute_prn[i] 	= cdb_prn[i]; 
-			assign execute_valid[i] = cdb_valid[i]; 
-		end
-
 		for(i=0;i<`MACHINE_WIDTH;i=i+1) begin
 			assign retire_dest_prn_prev[i]			= pipe_retire_pkt[i].dest_prn_prev; 
 			assign retire_dest_prn_prev_valid[i]	= pipe_retire_pkt[i].packet_valid; 
@@ -256,11 +241,11 @@ module backend (
 		.dispatch_pkt_resp		(dispatch_rob_pkt_resp ),	
 		.retire_pkt				(retire_pkt			   ),
 		                                               
-		.writeback_rob_tag		(cdb_rob	   		   ),
-		.writeback_valid		(cdb_valid			   ),
-		.writeback_br_dir       (cdb_branch_dir 	   ),
-		.writeback_br_misp      (cdb_branch_misp	   ),
-		.writeback_redirect_pc	(cdb_redirect_pc	   )
+		.writeback_rob_tag		(writeback_rob	   		),
+		.writeback_valid		(writeback_valid		),
+		.writeback_br_dir       (writeback_branch_dir 	),
+		.writeback_br_misp      (writeback_branch_misp	),
+		.writeback_redirect_pc	(writeback_redirect_pc	)
 	);
 
 
@@ -379,8 +364,8 @@ module backend (
 		.pipe_flush				(pipe_flush				),
 		.dispatch_pkt			(int_dispatch_pkt		),
 		.dispatch_pkt_ready		(int_dispatch_pkt_ready	),
-		.cdb_valid				(cdb_valid				),
-		.cdb_prn				(cdb_prn				),
+		.writeback_valid		(writeback_valid		),
+		.writeback_prn	    	(writeback_prn			),
 		                    	                   
 		.issue_pkt				(int_issue_pkt			),
 		.rs_avail_cnt			(), 
@@ -396,8 +381,8 @@ module backend (
 		.pipe_flush				(pipe_flush				),
 		.dispatch_pkt			(mem_dispatch_pkt		),
 		.dispatch_pkt_ready		(mem_dispatch_pkt_ready	),
-		.cdb_valid				(cdb_valid				),
-		.cdb_prn				(cdb_prn				),
+		.writeback_valid		(writeback_valid		),
+		.writeback_prn			(writeback_prn			),
 		                    	                   
 		.issue_pkt				(mem_issue_pkt			),
 		.rs_avail_cnt			(), 
@@ -454,9 +439,9 @@ module backend (
 		end
 	endgenerate
 
-	assign wr_addr		= cdb_prn;
-	assign wr_data		= cdb_result;
-	assign wr_en		= cdb_valid;
+	assign wr_addr		= writeback_prn;
+	assign wr_data		= writeback_result;
+	assign wr_en		= writeback_valid;
 
 	prf u_prf(
 		.clk		 (clk		),
@@ -572,37 +557,39 @@ module backend (
 //             	 Writeback Stage		        //
 //                                              //
 //////////////////////////////////////////////////
-   	assign  cdb_branch_dir   	=   pipe_bru_branch_dir;	
-   	assign  cdb_branch_misp 	=   pipe_bru_branch_misp;	
-	assign  cdb_redirect_pc 	=   pipe_bru_redirect_pc;	
+   	assign  writeback_branch_dir   	=   pipe_bru_branch_dir;	
+   	assign  writeback_branch_misp 	=   pipe_bru_branch_misp;	
+	assign  writeback_redirect_pc 	=   pipe_bru_redirect_pc;	
 
-	//assign	cdb_st_addr			=	pipe_execute_pkt[6].result;
-	//assign	cdb_st_addr_stq		=	pipe_execute_pkt[6].stq_tag;
-	//assign	cdb_st_addr_valid	=	pipe_execute_pkt[6].packet_valid;
-	//assign	cdb_st_data			=	pipe_execute_pkt[6].st_data;
-	//assign	cdb_st_data_stq		=	pipe_execute_pkt[6].stq_tag;
-	//assign	cdb_st_data_size	=	pipe_execute_pkt[6].mem_size;	
-	//assign	cdb_st_data_valid	=	pipe_execute_pkt[6].packet_valid;
+	//assign	writeback_st_addr			=	pipe_execute_pkt[6].result;
+	//assign	writeback_st_addr_stq		=	pipe_execute_pkt[6].stq_tag;
+	//assign	writeback_st_addr_valid	=	pipe_execute_pkt[6].packet_valid;
+	//assign	writeback_st_data			=	pipe_execute_pkt[6].st_data;
+	//assign	writeback_st_data_stq		=	pipe_execute_pkt[6].stq_tag;
+	//assign	writeback_st_data_size	=	pipe_execute_pkt[6].mem_size;	
+	//assign	writeback_st_data_valid	=	pipe_execute_pkt[6].packet_valid;
 
-	//if store is broadcasting on cdb then load data must wait until cdb is free
+	//if store is broadcasting on writeback then load data must wait until writeback is free
 	assign writeback_lsq_ready = ~(pipe_execute_pkt[6].packet_valid && pipe_execute_pkt[6].wr_mem);
 
 	generate	
 		for(i=0;i<`ISSUE_WIDTH;i=i+1) begin
 			if(i==6) begin
-				//only broadcast store coming from the execute stage
-				assign	cdb_result[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].result	  		: writeback_lsq_data 	    ;
-				assign	cdb_pc[i]		=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].pc	      		: writeback_lsq_pc	 	    ;
-				assign	cdb_rob[i]		=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].rob_entry   	: writeback_lsq_rob_tag 	;  
-				assign	cdb_prn[i]		=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].dest_prn		: writeback_lsq_dest_prn	;
-				assign	cdb_valid[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].packet_valid	: writeback_lsq_valid 		;
+				//only broadcast store coming from the memory execute stage, let rob knows the store is complete
+                //store completes when store addr and store data is known
+                //load completes when load data is retrieved from dcache
+				assign	writeback_result[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].result	  		: writeback_lsq_data 	    ;
+				assign	writeback_pc[i]		=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].pc	      		: writeback_lsq_pc	 	    ;
+				assign	writeback_rob[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].rob_entry   	: writeback_lsq_rob_tag 	;  
+				assign	writeback_prn[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].dest_prn		: writeback_lsq_dest_prn	;
+				assign	writeback_valid[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].packet_valid	: writeback_lsq_valid 		;
 			end
 			else begin
-				assign	cdb_result[i]	=	pipe_execute_pkt[i].result;	 
-				assign	cdb_pc[i]		=	pipe_execute_pkt[i].pc;	 
-				assign	cdb_rob[i]		=	pipe_execute_pkt[i].rob_entry;	 
-				assign	cdb_prn[i]		=	pipe_execute_pkt[i].dest_prn;	
-				assign	cdb_valid[i]	=	pipe_execute_pkt[i].packet_valid;	
+				assign	writeback_result[i]	=	pipe_execute_pkt[i].result;	 
+				assign	writeback_pc[i]		=	pipe_execute_pkt[i].pc;	 
+				assign	writeback_rob[i]	=	pipe_execute_pkt[i].rob_entry;	 
+				assign	writeback_prn[i]	=	pipe_execute_pkt[i].dest_prn;	
+				assign	writeback_valid[i]	=	pipe_execute_pkt[i].packet_valid;	
 			end
 		end
 	endgenerate

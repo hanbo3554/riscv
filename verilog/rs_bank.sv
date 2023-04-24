@@ -12,8 +12,8 @@ module rs_bank #(
 	input							rst_n,
 	input							pipe_flush,
 	input DISPATCH_RS_PACKET		dispatch_pkt 	[0:`MACHINE_WIDTH-1],
-	input [`ISSUE_WIDTH-1:0]		cdb_valid,
-	input [`PRF_WIDTH-1:0]			cdb_prn		[0:`ISSUE_WIDTH-1],
+	input [`ISSUE_WIDTH-1:0]		writeback_valid,
+	input [`PRF_WIDTH-1:0]			writeback_prn		[0:`ISSUE_WIDTH-1],
 	                            	
 	output ISSUE_PACKET				issue_pkt 	[0:`ISSUE_WIDTH-1],
 	output [`MACHINE_WIDTH-1:0]		dispatch_pkt_ready,
@@ -76,12 +76,12 @@ module rs_bank #(
 		.clk					(clk				),  // the clock 							
 		.rst_n					(rst_n				),  // reset signal	
 		.pipe_flush				(pipe_flush			),		
+		.dispatch_pkt			(dispatch_pkt		),
 		.rs_use_en				(issue_en			),	// send signal to FU
 		.alloc_sel				(alloc_sel			),	// allocate the rs entry
 		.issue_sel				(issue_sel			),	// issue gnt_bus
-		.cdb_valid				(cdb_valid			),
-		.cdb_prn				(cdb_prn			),	
-		.dispatch_pkt			(dispatch_pkt		),
+		.writeback_valid		(writeback_valid	),
+		.writeback_prn			(writeback_prn		),	
 
 		.rs_wake_up				(rs_wake_up			),  // This RS is in use and ready to go to EX 
 		.rs_issued				(rs_issued			),  

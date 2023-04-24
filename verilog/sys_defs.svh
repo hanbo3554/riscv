@@ -305,6 +305,35 @@ typedef struct packed {
 } RETIRE_ROB_PACKET;
 
 
+
+typedef struct packed {
+	logic [31:0]				inst			;
+	logic [31:0]				pc		 		;
+	ALU_FUNC	 				op_type  		;			
+	logic [`PRF_WIDTH-1:0] 		op1_prn 		;			
+	logic [`PRF_WIDTH-1:0] 		op2_prn			;
+	logic 						use_op1_prn 	;
+	logic 						use_op2_prn 	;
+	logic [`PRF_WIDTH-1:0] 		dest_prn 		;
+	ALU_OPA_SELECT				op1_select		;
+	ALU_OPB_SELECT				op2_select		;
+	logic 						rd_mem 			;
+	logic 						wr_mem 			;
+	logic 						cond_branch 	;
+	logic 						uncond_branch 	;
+	logic [`ROB_WIDTH:0] 		rob_entry		;
+	logic 						op1_ready 		;
+	logic 						op2_ready 		;
+	FU_ID						fu_id			;
+	logic [`PTAB_WIDTH-1:0]		ptab_tag		;
+	logic [`STQ_WIDTH-1:0] 		stq_tag		 	;
+	logic [`LDQ_WIDTH-1:0]		ldq_tag			;
+    logic [`ISSUE_WIDTH-1:0]    wake_up         ;
+    logic                       issued          ;
+	logic						valid	        ;
+} RS_ENTRY;
+
+
 typedef struct packed {
 	logic [31:0]				pc		 		;
 	logic [`ARF_WIDTH-1:0] 		dest_arn 		;
@@ -367,8 +396,6 @@ typedef struct packed {
 	logic 						wr_mem 			;
 	logic 						cond_branch 	;
 	logic 						uncond_branch 	;
-//	logic 						halt 			;
-//	logic 						illegal 		;
 	logic [`ROB_WIDTH:0] 		rob_entry		;
 	FU_ID						fu_id			;
 	logic [`PTAB_WIDTH-1:0]		ptab_tag		;
