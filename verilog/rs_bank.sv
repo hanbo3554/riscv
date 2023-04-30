@@ -11,11 +11,13 @@ module rs_bank #(
 	input							clk,
 	input							rst_n,
 	input							pipe_flush,
-	input DISPATCH_RS_PACKET		dispatch_pkt 	[0:`MACHINE_WIDTH-1],
+	input DISPATCH_RS_PACKET		dispatch_pkt 	    [0:`MACHINE_WIDTH-1],
+	input [`PRF_WIDTH-1:0]			writeback_dest_prn	[0:`ISSUE_WIDTH-1],
 	input [`ISSUE_WIDTH-1:0]		writeback_valid,
-	input [`PRF_WIDTH-1:0]			writeback_prn		[0:`ISSUE_WIDTH-1],
-	                            	
-	output ISSUE_PACKET				issue_pkt 	[0:`ISSUE_WIDTH-1],
+	input [`PRF_WIDTH-1:0]          issue_dest_prn      [0:`ISSUE_WIDTH-1],
+    input [`ISSUE_WIDTH-1:0]        issue_valid,                            	
+	
+    output ISSUE_PACKET				issue_pkt 	        [0:`ISSUE_WIDTH-1],
 	output [`MACHINE_WIDTH-1:0]		dispatch_pkt_ready,
 	output reg [$clog2(RS_DEPTH):0] rs_avail_cnt, 
 	output		 					rs_full
@@ -41,7 +43,7 @@ module rs_bank #(
 	wire 	[RS_DEPTH-1:0] 						issue_en_N		[0:`ISSUE_WIDTH-1];		//local issue enable(per FU)	
 
 	assign rs_full = rs_avail == {RS_DEPTH{1'b0}};  //none available
-	assign dispatch_pkt_ready = 	(rs_avail_cnt>=4) ? 4'b1111 : 
+	assign dispatch_pkt_ready = (rs_avail_cnt>=4) ? 4'b1111 : 
 								(rs_avail_cnt==3) ? 4'b0111 :
 								(rs_avail_cnt==2) ?	4'b0011 :
 								(rs_avail_cnt==1) ?	4'b0001 :
@@ -81,7 +83,9 @@ module rs_bank #(
 		.alloc_sel				(alloc_sel			),	// allocate the rs entry
 		.issue_sel				(issue_sel			),	// issue gnt_bus
 		.writeback_valid		(writeback_valid	),
-		.writeback_prn			(writeback_prn		),	
+		.writeback_dest_prn		(writeback_dest_prn	),	
+		.issue_dest_prn		    (issue_dest_prn		),
+		.issue_valid 		    (issue_valid	    ), 	 
 
 		.rs_wake_up				(rs_wake_up			),  // This RS is in use and ready to go to EX 
 		.rs_issued				(rs_issued			),  

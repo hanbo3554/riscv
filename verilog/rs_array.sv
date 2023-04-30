@@ -16,8 +16,10 @@ module rs_array #(
 	input [`MACHINE_WIDTH-1:0]	alloc_sel		[0:RS_DEPTH-1],	// allocate the rs entry
 	input [RS_DEPTH-1:0]		issue_sel		[0:`ISSUE_WIDTH-1],	// issue gnt_bus 
 	input [`ISSUE_WIDTH-1:0]	writeback_valid,  	
-	input [`PRF_WIDTH-1:0]		writeback_prn	[0:`ISSUE_WIDTH-1],
-                                
+	input [`PRF_WIDTH-1:0]		writeback_dest_prn	[0:`ISSUE_WIDTH-1],
+   	input [`PRF_WIDTH-1:0]      issue_dest_prn      [0:`ISSUE_WIDTH-1],
+    input [`ISSUE_WIDTH-1:0]    issue_valid,     
+
 	output [`ISSUE_WIDTH-1:0] 	rs_wake_up		[0:RS_DEPTH-1], // This RS is in use and ready to go to EX 
 	output [RS_DEPTH-1:0]  		rs_issued,     		
 	output [RS_DEPTH-1:0]  		rs_avail,     		// This RS is available to be allocated 
@@ -25,10 +27,11 @@ module rs_array #(
 	output ISSUE_PACKET			issue_pkt		[0:`ISSUE_WIDTH-1]
 );	
 
-	ISSUE_PACKET 		issue_pkt_N		[0:RS_DEPTH-1];
-	DISPATCH_RS_PACKET 	dispatch_pkt_N	[0:RS_DEPTH-1];
-	wire [`ROB_WIDTH:0] rob_tag_N		[0:RS_DEPTH-1];
+	ISSUE_PACKET 		    issue_pkt_N		[0:RS_DEPTH-1];
+	DISPATCH_RS_PACKET 	    dispatch_pkt_N	[0:RS_DEPTH-1];
+    
 
+    
 
 	xbar#(
 		.INPUT_NUM(`MACHINE_WIDTH),
@@ -59,14 +62,15 @@ module rs_array #(
 				.pipe_flush				(pipe_flush						),         
 				.dispatch_pkt			(dispatch_pkt_N[i]              ),
 		   		.issue_en         	    (rs_use_en[i]					),	
-				.writeback_valid 		(writeback_valid				),
-                .writeback_prn			(writeback_prn					),
 				.rs1_wake_up			(rs_wake_up[i]					),  
 				.rs1_issued				(rs_issued[i]					),  
 				.rs1_avail				(rs_avail[i]					), 
 				.rs1_age				(rs_age[i]						), 
-			 	.rs1_issue_pkt  		(issue_pkt_N[i]     			)	
-
+			 	.rs1_issue_pkt  		(issue_pkt_N[i]     			),	
+                .writeback_dest_prn		(writeback_dest_prn				),
+				.writeback_valid 		(writeback_valid				),
+                .issue_dest_prn		    (issue_dest_prn				    ),
+				.issue_valid 		    (issue_valid				    )
 			);
 		end	
 	endgenerate

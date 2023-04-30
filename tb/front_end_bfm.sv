@@ -5,9 +5,9 @@ class front_end_bfm;
 
 
     function new();
-        int icache_hit_rate         = 80; //80
+        int icache_hit_rate         = 95; //80
         int br_dir_mode             = 3;
-        int btb_accuracy            = 100; //80
+        int btb_accuracy            = 95; //80
         int icache_miss_latency_min = 1;
         int icache_miss_latency_max = 8;
         fork 

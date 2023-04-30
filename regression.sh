@@ -6,15 +6,17 @@ export PROGRAM_EXT=c
 export RM_PATH=five_stage_pipeline
 export DUT_PATH=test_backend
 export NUM_INSTR_LIMIT=5000
-
+export TEST_NAME=memory
 
 function generate_instructions {
 	testname=$1
     if [ ! -d $INSTR_DIR ]; then
         mkdir $INSTR_DIR
     fi
-	python instr_gen.py
-	mv test.s $INSTR_DIR/$testname.s
+	cd scripts
+	python3 instr_gen.py
+	mv test.s ../$INSTR_DIR/$testname.s
+	cd ../
 }
 
 
@@ -95,15 +97,21 @@ function compare_results {
     done
     echo ""
     echo "PASSED $pass_count/$total tests ($fail_count failures)."
+    if [ $fail_count -gt 0 ]; then
+        exit 1
+    fi
 }
 
 
 
-for i in {1..100}; do
-	#generate_instructions memory$i
-	compile_instr assembly ${ASSEMBLY_EXT} memory$i
-	generate_dut_outputs memory$i
-	generate_rm_outputs memory$i
-
+for iter in {1..5}; do
+    make gen_seed
+    for i in {1..2000}; do
+        echo "ITERATION = $iter"
+    #	generate_instructions ${TEST_NAME}$i
+    	compile_instr assembly ${ASSEMBLY_EXT} ${TEST_NAME}$i
+    	generate_dut_outputs ${TEST_NAME}$i
+    	generate_rm_outputs ${TEST_NAME}$i
+    done
+    compare_results
 done
-compare_results

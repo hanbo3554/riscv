@@ -13,7 +13,7 @@ module busy_table(
 	input 	[`MACHINE_WIDTH-1:0]	free_prn_ready,	
 
 	//resets the bit when an execution unit writes a value into this register.
-	input 	[`PRF_WIDTH-1:0] 		writeback_prn			[0:`ISSUE_WIDTH-1],
+	input 	[`PRF_WIDTH-1:0] 		writeback_dest_prn			[0:`ISSUE_WIDTH-1],
 	input 	[`ISSUE_WIDTH-1:0]		writeback_valid,	
 
 	input 	[`PRF_WIDTH-1:0] 		pr_src1				[0:`MACHINE_WIDTH-1],
@@ -66,20 +66,20 @@ module busy_table(
 	genvar i;
 	generate
 		for(i=0;i<`MACHINE_WIDTH;i=i+1) begin
-			assign pr_src1_data_ready_fwd[i] =	pr_src1[i] == writeback_prn[0] && writeback_valid[0] ||
-												pr_src1[i] == writeback_prn[1] && writeback_valid[1] ||
-												pr_src1[i] == writeback_prn[2] && writeback_valid[2] ||
-												pr_src1[i] == writeback_prn[3] && writeback_valid[3] ||
-												pr_src1[i] == writeback_prn[4] && writeback_valid[4] ||
-												pr_src1[i] == writeback_prn[5] && writeback_valid[5] ||
-												pr_src1[i] == writeback_prn[6] && writeback_valid[6] ;
-			assign pr_src2_data_ready_fwd[i] =	pr_src2[i] == writeback_prn[0] && writeback_valid[0] ||
-												pr_src2[i] == writeback_prn[1] && writeback_valid[1] ||
-												pr_src2[i] == writeback_prn[2] && writeback_valid[2] ||
-												pr_src2[i] == writeback_prn[3] && writeback_valid[3] ||
-												pr_src2[i] == writeback_prn[4] && writeback_valid[4] ||
-												pr_src2[i] == writeback_prn[5] && writeback_valid[5] ||
-												pr_src2[i] == writeback_prn[6] && writeback_valid[6] ;
+			assign pr_src1_data_ready_fwd[i] =	pr_src1[i] == writeback_dest_prn[0] && writeback_valid[0] ||
+												pr_src1[i] == writeback_dest_prn[1] && writeback_valid[1] ||
+												pr_src1[i] == writeback_dest_prn[2] && writeback_valid[2] ||
+												pr_src1[i] == writeback_dest_prn[3] && writeback_valid[3] ||
+												pr_src1[i] == writeback_dest_prn[4] && writeback_valid[4] ||
+												pr_src1[i] == writeback_dest_prn[5] && writeback_valid[5] ||
+												pr_src1[i] == writeback_dest_prn[6] && writeback_valid[6] ;
+			assign pr_src2_data_ready_fwd[i] =	pr_src2[i] == writeback_dest_prn[0] && writeback_valid[0] ||
+												pr_src2[i] == writeback_dest_prn[1] && writeback_valid[1] ||
+												pr_src2[i] == writeback_dest_prn[2] && writeback_valid[2] ||
+												pr_src2[i] == writeback_dest_prn[3] && writeback_valid[3] ||
+												pr_src2[i] == writeback_dest_prn[4] && writeback_valid[4] ||
+												pr_src2[i] == writeback_dest_prn[5] && writeback_valid[5] ||
+												pr_src2[i] == writeback_dest_prn[6] && writeback_valid[6] ;
 
 			//assign pr_src1_data_ready[i] = busy_table[pr_src1[i]] != 1'b1 || pr_src1_data_ready_fwd[i];
 			//assign pr_src2_data_ready[i] = busy_table[pr_src2[i]] != 1'b1 || pr_src2_data_ready_fwd[i];
@@ -101,19 +101,19 @@ module busy_table(
 					if(free_prn_valid[3] && free_prn_ready[3] && i==free_prn[3])
 						busy_table[i] <= 1'b1;
 					
-					if(writeback_valid[0] && i==writeback_prn[0])
+					if(writeback_valid[0] && i==writeback_dest_prn[0])
 						busy_table[i] <= 1'b0;				
-					if(writeback_valid[1] && i==writeback_prn[1])
+					if(writeback_valid[1] && i==writeback_dest_prn[1])
 						busy_table[i] <= 1'b0;		
-					if(writeback_valid[2] && i==writeback_prn[2])
+					if(writeback_valid[2] && i==writeback_dest_prn[2])
 						busy_table[i] <= 1'b0;		
-					if(writeback_valid[3] && i==writeback_prn[3])
+					if(writeback_valid[3] && i==writeback_dest_prn[3])
 						busy_table[i] <= 1'b0;
-					if(writeback_valid[4] && i==writeback_prn[4])
+					if(writeback_valid[4] && i==writeback_dest_prn[4])
 						busy_table[i] <= 1'b0;		
-					if(writeback_valid[5] && i==writeback_prn[5])
+					if(writeback_valid[5] && i==writeback_dest_prn[5])
 						busy_table[i] <= 1'b0;		
-					if(writeback_valid[6] && i==writeback_prn[6])
+					if(writeback_valid[6] && i==writeback_dest_prn[6])
 						busy_table[i] <= 1'b0;
 				end
 			end

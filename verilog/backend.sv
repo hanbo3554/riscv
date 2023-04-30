@@ -87,8 +87,11 @@ module backend (
 	
 	wire [`MACHINE_WIDTH-1:0]	int_dispatch_pkt_ready;
 	wire [`MACHINE_WIDTH-1:0]	mem_dispatch_pkt_ready;
-
-	/********************************PRF Declaration*******************************/
+ 
+    wire [`PRF_WIDTH-1:0]       issue_dest_prn  [0:`ISSUE_WIDTH-1];
+    wire [`ISSUE_WIDTH-1:0]     issue_valid;
+	
+    /********************************PRF Declaration*******************************/
 	wire	[`PRF_WIDTH-1:0] 	rda_addr	[0:`ISSUE_WIDTH-1]	;    
 	wire	[`PRF_WIDTH-1:0] 	rdb_addr	[0:`ISSUE_WIDTH-1]	;    
 	wire	[`PRF_WIDTH-1:0] 	wr_addr		[0:`ISSUE_WIDTH-1]	;    
@@ -108,7 +111,7 @@ module backend (
 	wire [`ISSUE_WIDTH-1:0]		writeback_valid;
 	wire [`XLEN-1:0]			writeback_pc		[0:`ISSUE_WIDTH-1];
 	wire [`ROB_WIDTH:0]			writeback_rob		[0:`ISSUE_WIDTH-1];
-	wire [`PRF_WIDTH-1:0]		writeback_prn		[0:`ISSUE_WIDTH-1];
+	wire [`PRF_WIDTH-1:0]		writeback_dest_prn	[0:`ISSUE_WIDTH-1];
 	wire [`XLEN-1:0]			writeback_result	[0:`ISSUE_WIDTH-1];
 	wire						writeback_branch_dir;
 	wire						writeback_branch_misp;
@@ -148,7 +151,7 @@ module backend (
 		.retire_prn_prev_valid	(retire_dest_prn_prev_valid	),	
 		.retire_prn_prev_ready	(retire_dest_prn_prev_ready	),
 
-		.writeback_prn			(writeback_prn				),		
+		.writeback_dest_prn		(writeback_dest_prn			),		
 		.writeback_valid		(writeback_valid			),
 
 		.arch_rat				(arch_rat_out				),
@@ -349,12 +352,14 @@ module backend (
 
 
 
-	generate	//allocate instrs
+	generate	
+        //allocate instrs
 		for(i=0;i<`MACHINE_WIDTH;i=i+1) begin
 			assign int_dispatch_pkt[i] = dispatch_rs_pkt[i].fu_id != AGU_0 ? dispatch_rs_pkt[i] : 0;
 			assign mem_dispatch_pkt[i] = dispatch_rs_pkt[i].fu_id == AGU_0 ? dispatch_rs_pkt[i] : 0;
 		end
 	endgenerate
+
 
 	rs_bank #(
 		.RS_DEPTH(`RS_DEPTH_INT))
@@ -365,8 +370,10 @@ module backend (
 		.dispatch_pkt			(int_dispatch_pkt		),
 		.dispatch_pkt_ready		(int_dispatch_pkt_ready	),
 		.writeback_valid		(writeback_valid		),
-		.writeback_prn	    	(writeback_prn			),
-		                    	                   
+		.writeback_dest_prn	    (writeback_dest_prn		),
+		.issue_dest_prn		    (issue_dest_prn			),
+		.issue_valid 		    (issue_valid		    ), 	  
+
 		.issue_pkt				(int_issue_pkt			),
 		.rs_avail_cnt			(), 
 		.rs_full				()
@@ -381,10 +388,12 @@ module backend (
 		.pipe_flush				(pipe_flush				),
 		.dispatch_pkt			(mem_dispatch_pkt		),
 		.dispatch_pkt_ready		(mem_dispatch_pkt_ready	),
+		.writeback_dest_prn		(writeback_dest_prn		),
 		.writeback_valid		(writeback_valid		),
-		.writeback_prn			(writeback_prn			),
-		                    	                   
-		.issue_pkt				(mem_issue_pkt			),
+		.issue_dest_prn		    (issue_dest_prn			),
+		.issue_valid 		    (issue_valid		    ), 	                   
+
+        .issue_pkt				(mem_issue_pkt			),
 		.rs_avail_cnt			(), 
 		.rs_full				()
 	);
@@ -398,6 +407,13 @@ module backend (
 								mem_dispatch_pkt_ready & 
 								dispatch_rob_pkt_ready ;
 
+	generate	
+        //early tag broadcast
+        for(i=0;i<`ISSUE_WIDTH;i=i+1) begin: gen_tag_broadcast_bus
+            assign issue_dest_prn[i]    = issue_pkt[i].dest_prn;
+            assign issue_valid[i]       = issue_pkt[i].packet_valid;
+        end
+	endgenerate
 
 
 
@@ -439,7 +455,7 @@ module backend (
 		end
 	endgenerate
 
-	assign wr_addr		= writeback_prn;
+	assign wr_addr		= writeback_dest_prn;
 	assign wr_data		= writeback_result;
 	assign wr_en		= writeback_valid;
 
@@ -462,6 +478,8 @@ module backend (
 			assign reg_read_pkt[i].op_type  		=	pipe_issue_pkt[i].op_type  		;
 			assign reg_read_pkt[i].op1_val 			=	rda_out[i] 		   			    ;
 			assign reg_read_pkt[i].op2_val			=	rdb_out[i]			   			;
+			assign reg_read_pkt[i].op1_prn 	    	=	pipe_issue_pkt[i].op1_prn 		;
+			assign reg_read_pkt[i].op2_prn 	    	=	pipe_issue_pkt[i].op2_prn 		;
 			assign reg_read_pkt[i].dest_prn 		=	pipe_issue_pkt[i].dest_prn 		;
 			assign reg_read_pkt[i].op1_select		=	pipe_issue_pkt[i].op1_select	;
 			assign reg_read_pkt[i].op2_select		=	pipe_issue_pkt[i].op2_select	;
@@ -511,11 +529,16 @@ module backend (
 //////////////////////////////////////////////////
 
 	fu_top u_fu_top(
-		.clk			(clk				),
-		.rst_n			(rst_n				),
-		.pipe_flush		(pipe_flush			),
-  		.reg_read_pkt	(pipe_reg_read_pkt	),    
-  		.execute_pkt	(execute_pkt		)	 
+		.clk			                (clk				    ),
+		.rst_n			                (rst_n				    ),
+		.pipe_flush		                (pipe_flush			    ),
+  		.reg_read_pkt	                (pipe_reg_read_pkt	    ),    
+  		.execute_pkt	                (execute_pkt		    ),
+                                                                
+        .bypass_execute_pkt	            (pipe_execute_pkt       ),
+        .bypass_writeback_lsq_data      (writeback_lsq_data     ),
+        .bypass_writeback_lsq_dest_prn  (writeback_lsq_dest_prn ),
+        .bypass_writeback_lsq_valid     (writeback_lsq_valid    )
 	);
 
 
@@ -578,18 +601,18 @@ module backend (
 				//only broadcast store coming from the memory execute stage, let rob knows the store is complete
                 //store completes when store addr and store data is known
                 //load completes when load data is retrieved from dcache
-				assign	writeback_result[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].result	  		: writeback_lsq_data 	    ;
-				assign	writeback_pc[i]		=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].pc	      		: writeback_lsq_pc	 	    ;
-				assign	writeback_rob[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].rob_entry   	: writeback_lsq_rob_tag 	;  
-				assign	writeback_prn[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].dest_prn		: writeback_lsq_dest_prn	;
-				assign	writeback_valid[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].packet_valid	: writeback_lsq_valid 		;
+				assign	writeback_result[i]	    =	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].result	  		: writeback_lsq_data 	    ;
+				assign	writeback_pc[i]		    =	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].pc	      		: writeback_lsq_pc	 	    ;
+				assign	writeback_rob[i]	    =	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].rob_entry   	: writeback_lsq_rob_tag 	;  
+				assign	writeback_dest_prn[i]	=	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].dest_prn		: writeback_lsq_dest_prn	;
+				assign	writeback_valid[i]	    =	pipe_execute_pkt[i].packet_valid && pipe_execute_pkt[i].wr_mem ? pipe_execute_pkt[i].packet_valid	: writeback_lsq_valid 		;
 			end
 			else begin
-				assign	writeback_result[i]	=	pipe_execute_pkt[i].result;	 
-				assign	writeback_pc[i]		=	pipe_execute_pkt[i].pc;	 
-				assign	writeback_rob[i]	=	pipe_execute_pkt[i].rob_entry;	 
-				assign	writeback_prn[i]	=	pipe_execute_pkt[i].dest_prn;	
-				assign	writeback_valid[i]	=	pipe_execute_pkt[i].packet_valid;	
+				assign	writeback_result[i]	    =	pipe_execute_pkt[i].result;	 
+				assign	writeback_pc[i]		    =	pipe_execute_pkt[i].pc;	 
+				assign	writeback_rob[i]	    =	pipe_execute_pkt[i].rob_entry;	 
+				assign	writeback_dest_prn[i]	=	pipe_execute_pkt[i].dest_prn;	
+				assign	writeback_valid[i]	    =	pipe_execute_pkt[i].packet_valid;	
 			end
 		end
 	endgenerate

@@ -4,25 +4,99 @@ module fu_top(
 	input	clk,
 	input	rst_n,
 	input	pipe_flush,
-  	input	REG_READ_PACKET		reg_read_pkt	[0:`ISSUE_WIDTH-1],    
-  	output 	EXECUTE_PACKET		execute_pkt		[0:`ISSUE_WIDTH-1]
+  	input	REG_READ_PACKET		reg_read_pkt	            [0:`ISSUE_WIDTH-1],    
+  	output 	EXECUTE_PACKET		execute_pkt		            [0:`ISSUE_WIDTH-1],
+
+    //bypassing network
+    input   EXECUTE_PACKET		bypass_execute_pkt	        [0:`ISSUE_WIDTH-1],
+    input   [`XLEN-1:0]         bypass_writeback_lsq_data,
+	input   [`PRF_WIDTH-1:0]	bypass_writeback_lsq_dest_prn,
+    input                       bypass_writeback_lsq_valid
+    
 );
 
-	REG_READ_PACKET		reg_read_pkt_pipe	[0:`MULT_LATENCY-1]	;
-	reg		[`XLEN-1:0]	op1_mux_out 		[0:`ISSUE_WIDTH-1]	;
-	reg		[`XLEN-1:0]	op2_mux_out 		[0:`ISSUE_WIDTH-1]	;
-	wire	[`XLEN-1:0] npc					[0:`ISSUE_WIDTH-1]	;
+	REG_READ_PACKET		        reg_read_pkt_pipe	[0:`MULT_LATENCY-1]	;
+    reg		[`XLEN-1:0]	        op1_mux_out 		[0:`ISSUE_WIDTH-1]	;
+	reg		[`XLEN-1:0]	        op2_mux_out 		[0:`ISSUE_WIDTH-1]	;
+	wire	[`XLEN-1:0]         npc					[0:`ISSUE_WIDTH-1]	;
+
+    wire    [`ISSUE_WIDTH-1:0]  op1_dest_match      [0:`ISSUE_WIDTH-1]  ;
+    wire    [`ISSUE_WIDTH-1:0]  op2_dest_match      [0:`ISSUE_WIDTH-1]  ;
+    BYPASS_SELECT               op1_bypass_sel      [0:`ISSUE_WIDTH-1]  ;
+    BYPASS_SELECT               op2_bypass_sel      [0:`ISSUE_WIDTH-1]  ;   
+    reg		[`XLEN-1:0]	        op1_bypass_out 	    [0:`ISSUE_WIDTH-1]	;
+	reg		[`XLEN-1:0]	        op2_bypass_out 	    [0:`ISSUE_WIDTH-1]	;
 
 
-	genvar i;
+
+	genvar i, j;
 	generate
 		for(i=0;i<`ISSUE_WIDTH;i=i+1) begin
+		    for(j=0;j<`ISSUE_WIDTH;j=j+1) begin
+			    assign op1_dest_match[i][j] = (reg_read_pkt[i].op1_prn == bypass_execute_pkt[j].dest_prn) && (reg_read_pkt[i].op1_prn != 0) && reg_read_pkt[i].packet_valid && bypass_execute_pkt[j].packet_valid;
+			    assign op2_dest_match[i][j] = (reg_read_pkt[i].op2_prn == bypass_execute_pkt[j].dest_prn) && (reg_read_pkt[i].op2_prn != 0) && reg_read_pkt[i].packet_valid && bypass_execute_pkt[j].packet_valid;
+            end
+        end
+            
+		for(i=0;i<`ISSUE_WIDTH;i=i+1) begin
+			always_comb begin
+				case (op1_dest_match[i])
+                    7'b0000001: op1_bypass_sel[i] = BYPASS_ALU_0;  
+                    7'b0000010: op1_bypass_sel[i] = BYPASS_ALU_1;  
+                    7'b0000100: op1_bypass_sel[i] = BYPASS_ALU_2;  
+                    7'b0001000: op1_bypass_sel[i] = BYPASS_ALU_3;  
+                    7'b0010000: op1_bypass_sel[i] = BYPASS_MUL_0;  
+                    7'b0100000: op1_bypass_sel[i] = BYPASS_BRU_0;  
+                    7'b1000000: op1_bypass_sel[i] = BYPASS_LSQ_0; 
+                    default:    op1_bypass_sel[i] = BYPASS_NONE;
+                endcase
+			end
+            always_comb begin
+                case (op2_dest_match[i])
+                    7'b0000001: op2_bypass_sel[i] = BYPASS_ALU_0;  
+                    7'b0000010: op2_bypass_sel[i] = BYPASS_ALU_1;  
+                    7'b0000100: op2_bypass_sel[i] = BYPASS_ALU_2;  
+                    7'b0001000: op2_bypass_sel[i] = BYPASS_ALU_3;  
+                    7'b0010000: op2_bypass_sel[i] = BYPASS_MUL_0;  
+                    7'b0100000: op2_bypass_sel[i] = BYPASS_BRU_0;  
+                    7'b1000000: op2_bypass_sel[i] = BYPASS_LSQ_0; 
+                    default:    op2_bypass_sel[i] = BYPASS_NONE;
+                endcase
+            end
+			always_comb begin
+				op1_bypass_out[i] = `XLEN'hdeadfbac;
+				case (op1_bypass_sel[i])
+				    BYPASS_NONE :    op1_bypass_out[i] = reg_read_pkt[i].op1_val;
+				    BYPASS_ALU_0:    op1_bypass_out[i] = bypass_execute_pkt[0].result;
+				    BYPASS_ALU_1:    op1_bypass_out[i] = bypass_execute_pkt[1].result;
+				    BYPASS_ALU_2:    op1_bypass_out[i] = bypass_execute_pkt[2].result;
+				    BYPASS_ALU_3:    op1_bypass_out[i] = bypass_execute_pkt[3].result;
+				    BYPASS_MUL_0:    op1_bypass_out[i] = bypass_execute_pkt[4].result;
+				    BYPASS_BRU_0:    op1_bypass_out[i] = bypass_execute_pkt[5].result;
+				    BYPASS_LSQ_0:    op1_bypass_out[i] = bypass_writeback_lsq_data;
+				endcase
+			end
+  			always_comb begin
+				op2_bypass_out[i] = `XLEN'hdeadfbac;
+				case (op2_bypass_sel[i])
+				    BYPASS_NONE :    op2_bypass_out[i] = reg_read_pkt[i].op2_val;
+				    BYPASS_ALU_0:    op2_bypass_out[i] = bypass_execute_pkt[0].result;
+				    BYPASS_ALU_1:    op2_bypass_out[i] = bypass_execute_pkt[1].result;
+				    BYPASS_ALU_2:    op2_bypass_out[i] = bypass_execute_pkt[2].result;
+				    BYPASS_ALU_3:    op2_bypass_out[i] = bypass_execute_pkt[3].result;
+				    BYPASS_MUL_0:    op2_bypass_out[i] = bypass_execute_pkt[4].result;
+				    BYPASS_BRU_0:    op2_bypass_out[i] = bypass_execute_pkt[5].result;
+				    BYPASS_LSQ_0:    op2_bypass_out[i] = bypass_writeback_lsq_data;
+				endcase
+			end
+        end
+        for(i=0;i<`ISSUE_WIDTH;i=i+1) begin
 			assign npc[i] = reg_read_pkt[i].pc + 3'd4;
-
 			always_comb begin
 				op1_mux_out[i] = `XLEN'hdeadfbac;
 				case (reg_read_pkt[i].op1_select)
-					OPA_IS_RS1:  op1_mux_out[i] = reg_read_pkt[i].op1_val;
+					//OPA_IS_RS1:  op1_mux_out[i] = reg_read_pkt[i].op1_val;
+					OPA_IS_RS1:  op1_mux_out[i] = op1_bypass_out[i];
 					OPA_IS_NPC:  op1_mux_out[i] = npc[i];
 					OPA_IS_PC:   op1_mux_out[i] = reg_read_pkt[i].pc;
 					OPA_IS_ZERO: op1_mux_out[i] = 0;
@@ -35,7 +109,8 @@ module fu_top(
 				// value on the output of the mux you have an invalid opb_select
 				op2_mux_out[i] = `XLEN'hfacefeed;
 				case (reg_read_pkt[i].op2_select)
-					OPB_IS_RS2:   op2_mux_out[i] = reg_read_pkt[i].op2_val;
+					//OPB_IS_RS2:   op2_mux_out[i] = reg_read_pkt[i].op2_val;
+					OPB_IS_RS2:   op2_mux_out[i] = op2_bypass_out[i];
 					OPB_IS_I_IMM: op2_mux_out[i] = `RV32_signext_Iimm(reg_read_pkt[i].inst);
 					OPB_IS_S_IMM: op2_mux_out[i] = `RV32_signext_Simm(reg_read_pkt[i].inst);
 					OPB_IS_B_IMM: op2_mux_out[i] = `RV32_signext_Bimm(reg_read_pkt[i].inst);
@@ -85,8 +160,8 @@ module fu_top(
 	);
 
 	bru u_bru_0 (
-		.rs1(reg_read_pkt[5].op1_val), 
-		.rs2(reg_read_pkt[5].op2_val), 
+		.rs1(op1_bypass_out[5]), 
+		.rs2(op2_bypass_out[5]), 
 		.rd(execute_pkt[5].result), //this is trash when it is cond br, x0=rd 
 		.op1(op1_mux_out[5]), 
 		.op2(op2_mux_out[5]),
@@ -165,7 +240,7 @@ module fu_top(
 			//	assign execute_pkt[i].halt 			=	reg_read_pkt[i].halt			;
 			//	assign execute_pkt[i].illegal 		=	reg_read_pkt[i].illegal 		;
 				assign execute_pkt[i].rob_entry	 	=   reg_read_pkt[i].rob_entry	 	;
-				assign execute_pkt[i].st_data	 	=   reg_read_pkt[i].op2_val	 		;
+				assign execute_pkt[i].st_data	 	=   op2_bypass_out[i]	            ;
 				assign execute_pkt[i].stq_tag	 	=   reg_read_pkt[i].stq_tag	 		;
 				assign execute_pkt[i].ldq_tag	 	=   reg_read_pkt[i].ldq_tag	 		;
 				assign execute_pkt[i].mem_size	 	=  	reg_read_pkt[i].inst[14:12]		;

@@ -165,8 +165,10 @@ module ldq(
 			assign st_ld_violation_N[i] = 	ldq_entry[i].addr[`XLEN-1:2]==execute_st_addr[`XLEN-1:2] && 
 											ldq_entry[i].addr_valid && execute_st_addr_valid &&
 											ldq_entry[i].st_mask[execute_st_addr_stq_tag] &&
-											(ldq_entry[i].data_valid || (i==fwd_ldq_tag && fwd_valid) || 
-											ldq_entry[i].fired || (fire_ld_accept && i==fire_ld_ldq_tag)); //already get data(fwd) or fired
+											(ldq_entry[i].data_valid ||                                                 //already get data
+                                            (fwd_valid && i==fwd_ldq_tag) ||                                            //is geting fwd data
+											ldq_entry[i].fired ||                                                       //already fired
+                                            (fire_ld_valid && i==fire_ld_ldq_tag));                                     //is firing violated load
 		end
 	endgenerate
 

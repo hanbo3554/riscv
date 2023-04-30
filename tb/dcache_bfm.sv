@@ -5,9 +5,9 @@ class dcache_bfm;
 
 
     function new();
-        int store_ready_rate        = 80; //80
-        int load_ready_rate         = 80; //80
-        int load_hit_rate           = 50; //50
+        int store_ready_rate        = 95; //80
+        int load_ready_rate         = 95; //80
+        int load_hit_rate           = 95; //50
         int load_miss_latency_min   = 1;
         int load_miss_latency_max   = 8;
         fork 

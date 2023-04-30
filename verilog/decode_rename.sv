@@ -16,7 +16,7 @@ module decode_rename(
 	input	[`MACHINE_WIDTH-1:0]	retire_prn_prev_valid						,	
 	output  [`MACHINE_WIDTH-1:0]    retire_prn_prev_ready						,
 
-	input	[`PRF_WIDTH-1:0] 		writeback_prn			[0:`ISSUE_WIDTH-1]	,
+	input	[`PRF_WIDTH-1:0] 		writeback_dest_prn		[0:`ISSUE_WIDTH-1]	,
 	input	[`ISSUE_WIDTH-1:0]		writeback_valid								,
 
 	input	[`PRF_WIDTH-1:0]		arch_rat				[0:`ARF_DEPTH-1]	,
@@ -191,7 +191,7 @@ module decode_rename(
 		.free_prn_valid			(free_prn_valid		),	
 		.free_prn_ready			(free_prn_ready		),	
     	                    	
-		.writeback_prn			(writeback_prn		),	
+		.writeback_dest_prn	    (writeback_dest_prn),	
 		.writeback_valid		(writeback_valid	),	
     	                    	
 		.pr_src1				(pr_src1			),

@@ -99,6 +99,18 @@ typedef enum logic [`ISSUE_IDX-1:0] {
 } FU_ID;
 
 
+typedef enum logic [$clog2(`ISSUE_WIDTH+1)-1:0] {
+    BYPASS_NONE     = 0,
+	BYPASS_ALU_0	= 1,
+	BYPASS_ALU_1 	= 2,
+	BYPASS_ALU_2 	= 3,
+	BYPASS_ALU_3 	= 4,
+	BYPASS_MUL_0 	= 5,
+	BYPASS_BRU_0 	= 6,
+	BYPASS_LSQ_0 	= 7
+} BYPASS_SELECT;
+
+
 typedef enum logic [1:0] {
 	OPA_IS_RS1  = 2'h0,
 	OPA_IS_NPC  = 2'h1,
@@ -328,7 +340,6 @@ typedef struct packed {
 	logic [`PTAB_WIDTH-1:0]		ptab_tag		;
 	logic [`STQ_WIDTH-1:0] 		stq_tag		 	;
 	logic [`LDQ_WIDTH-1:0]		ldq_tag			;
-    logic [`ISSUE_WIDTH-1:0]    wake_up         ;
     logic                       issued          ;
 	logic						valid	        ;
 } RS_ENTRY;
@@ -411,6 +422,8 @@ typedef struct packed {
 	ALU_FUNC	 				op_type  		;			
 	logic [`XLEN-1:0] 			op1_val 		;			
 	logic [`XLEN-1:0]	 		op2_val			;
+    logic [`PRF_WIDTH-1:0] 		op1_prn 		;			
+	logic [`PRF_WIDTH-1:0] 		op2_prn			;
 	logic [`PRF_WIDTH-1:0] 		dest_prn 		;
 	ALU_OPA_SELECT				op1_select		;
 	ALU_OPB_SELECT				op2_select		;
